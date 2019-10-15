@@ -393,7 +393,7 @@ div.tocify {
 <li>The second most important thing</li>
 <li>The third most important thing</li>
 </ol>
-<p>See <a href="http://rmarkdown.rstudio.com/">http://rmarkdown.rstudio.com/</a> for all the amazing things you can do.</p>
+<p>See <a href="http://rmarkdown.rstudio.com/" class="uri">http://rmarkdown.rstudio.com/</a> for all the amazing things you can do.</p>
 <p>Here’s my first code chunk.</p>
 <pre class="r"><code>1+2</code></pre>
 <pre><code>## [1] 3</code></pre>
@@ -440,172 +440,172 @@ value
 <tbody>
 <tr>
 <td style="text-align:center;">
--175.18
+-132.36
 </td>
 <td style="text-align:center;">
--15.00
+8.56
 </td>
 <td style="text-align:center;">
-7.00
+12.04
 </td>
 <td style="text-align:center;">
-e
+b
 </td>
 <td style="text-align:center;">
-0.00
+0.05
 </td>
 </tr>
 <tr>
 <td style="text-align:center;">
--156.19
+9.57
 </td>
 <td style="text-align:center;">
--14.14
+20.74
 </td>
 <td style="text-align:center;">
-5.67
+9.77
 </td>
 <td style="text-align:center;">
 a
 </td>
 <td style="text-align:center;">
-2.29
+-0.35
 </td>
 </tr>
 <tr>
 <td style="text-align:center;">
-20.87
+131.29
 </td>
 <td style="text-align:center;">
--47.94
+37.54
 </td>
 <td style="text-align:center;">
-18.75
-</td>
-<td style="text-align:center;">
-a
-</td>
-<td style="text-align:center;">
--1.37
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-97.13
-</td>
-<td style="text-align:center;">
-23.22
-</td>
-<td style="text-align:center;">
-10.47
-</td>
-<td style="text-align:center;">
-d
-</td>
-<td style="text-align:center;">
--0.13
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
--100.23
-</td>
-<td style="text-align:center;">
-12.01
-</td>
-<td style="text-align:center;">
-5.14
+7.97
 </td>
 <td style="text-align:center;">
 c
 </td>
 <td style="text-align:center;">
--3.00
+-0.80
 </td>
 </tr>
 <tr>
 <td style="text-align:center;">
-121.34
+-84.88
 </td>
 <td style="text-align:center;">
-59.66
+11.36
 </td>
 <td style="text-align:center;">
-18.39
+6.11
 </td>
 <td style="text-align:center;">
-e
+c
 </td>
 <td style="text-align:center;">
-1.97
+0.31
 </td>
 </tr>
 <tr>
 <td style="text-align:center;">
-66.38
+-58.18
 </td>
 <td style="text-align:center;">
--18.73
+-0.29
 </td>
 <td style="text-align:center;">
-9.35
+15.21
 </td>
 <td style="text-align:center;">
 d
 </td>
 <td style="text-align:center;">
-0.68
+-0.70
 </td>
 </tr>
 <tr>
 <td style="text-align:center;">
--145.81
+75.55
 </td>
 <td style="text-align:center;">
--46.56
+-22.51
 </td>
 <td style="text-align:center;">
-11.57
+13.98
 </td>
 <td style="text-align:center;">
-b
+c
 </td>
 <td style="text-align:center;">
--0.34
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-159.17
-</td>
-<td style="text-align:center;">
-48.53
-</td>
-<td style="text-align:center;">
-14.99
-</td>
-<td style="text-align:center;">
-b
-</td>
-<td style="text-align:center;">
--2.23
+0.31
 </td>
 </tr>
 <tr>
 <td style="text-align:center;">
--129.10
+60.98
 </td>
 <td style="text-align:center;">
--59.74
+-5.59
 </td>
 <td style="text-align:center;">
-18.91
+5.02
 </td>
 <td style="text-align:center;">
-b
+c
 </td>
 <td style="text-align:center;">
--0.35
+0.22
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+-103.35
+</td>
+<td style="text-align:center;">
+-56.10
+</td>
+<td style="text-align:center;">
+17.39
+</td>
+<td style="text-align:center;">
+a
+</td>
+<td style="text-align:center;">
+-0.43
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+-92.60
+</td>
+<td style="text-align:center;">
+36.31
+</td>
+<td style="text-align:center;">
+18.66
+</td>
+<td style="text-align:center;">
+a
+</td>
+<td style="text-align:center;">
+-0.03
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+-76.68
+</td>
+<td style="text-align:center;">
+-37.32
+</td>
+<td style="text-align:center;">
+19.61
+</td>
+<td style="text-align:center;">
+e
+</td>
+<td style="text-align:center;">
+0.39
 </td>
 </tr>
 </tbody>
@@ -618,11 +618,12 @@ b
 <p>Show tables, plots, etc. and describe them.</p>
 <pre class="r"><code>m &lt;- leaflet(data) %&gt;% 
   addTiles() %&gt;% 
-  addCircleMarkers(~x, ~y, radius = ~size,color=~category)
+  addCircleMarkers(~x, ~y, radius = ~size,color = ~as.factor(category)) %&gt;% 
+  addPopups(~x[2], ~y[2], &quot;Random popup&quot;)
 m  # a map with the default OSM tile layer</code></pre>
 <div class="figure">
-<div id="htmlwidget-6c3e8e4b364322b4c717" style="width:576px;height:288px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-6c3e8e4b364322b4c717">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addCircleMarkers","args":[[-14.9990496318787,-14.1425578482449,-47.937785955146,23.2246373500675,12.0140750147402,59.6565782558173,-18.734748121351,-46.5595482755452,48.5311427805573,-59.7428968548775,-45.8097747992724,-17.9679116047919,11.8715448305011,37.8119112364948,-0.509222522377968,47.7842772938311,23.233160879463,-49.0173826832324,36.4987395331264,41.0007195733488],[-175.181908300146,-156.191962519661,20.8724004495889,97.1336986497045,-100.227176304907,121.344821602106,66.3847352284938,-145.814246395603,159.173704627901,-129.102302407846,68.3534577861428,5.6629135273397,115.466055460274,95.05245834589,107.708545736969,171.813281765208,154.443794991821,-43.0141758453101,-143.19836916402,86.8726778123528],[6.99775445973501,5.67242127144709,18.7510148261208,10.4654943244532,5.14062191476114,18.3901090046857,9.35100446688011,11.5656995680183,14.9926926929038,18.9147341717035,19.1231192438863,17.9559715325013,5.70121329394169,9.68357505858876,17.2650242608506,9.21331325662322,7.71976947551593,9.28765372140333,16.8878742691595,13.8479006558191],null,null,{"interactive":true,"className":"","stroke":true,"color":["e","a","a","d","c","e","d","b","b","b","a","e","b","e","e","a","b","c","d","a"],"weight":5,"opacity":0.5,"fill":true,"fillColor":["e","a","a","d","c","e","d","b","b","b","a","e","b","e","e","a","b","c","d","a"],"fillOpacity":0.2},null,null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[-59.7428968548775,59.6565782558173],"lng":[-175.181908300146,171.813281765208]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-cdb424b81813f39c5b30" style="width:576px;height:288px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-cdb424b81813f39c5b30">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addCircleMarkers","args":[[8.5635791067034,20.7363000232726,37.5427547749132,11.3649075943977,-0.290871039032936,-22.5144264288247,-5.5930679384619,-56.1017565429211,36.3107837922871,-37.3201411217451,-32.9004563950002,-14.1579715814441,49.6115218475461,-48.0182508286089,-29.5329117681831,49.5012978091836,8.85446391999722,1.02046374231577,51.0687145683914,-32.8046523034573],[-132.362332753837,9.56859776750207,131.293085636571,-84.8766321782023,-58.1813824363053,75.5467252805829,60.9791968390346,-103.35242732428,-92.6035083085299,-76.6829640045762,104.822396971285,121.991649633273,-172.487139841542,41.1043936572969,-143.514738650993,-59.0297306142747,-151.19845812209,-8.38263105601072,-132.947895107791,93.4529837686568],[12.0377049664967,9.77224143221974,7.96722735511139,6.11457757418975,15.2135133801494,13.9796147972811,5.02414007671177,17.3884389037266,18.6555972346105,19.6109206741676,15.5704109650105,13.7630042491946,10.4680720565375,8.01193548715673,11.6650045604911,12.9819407581817,12.7518314309418,18.7496899615508,8.79939005710185,14.0588067355566],null,null,{"interactive":true,"className":"","stroke":true,"color":["b","a","c","c","d","c","c","a","a","e","b","b","a","b","b","a","b","c","c","c"],"weight":5,"opacity":0.5,"fill":true,"fillColor":["b","a","c","c","d","c","c","a","a","e","b","b","a","b","b","a","b","c","c","c"],"fillOpacity":0.2},null,null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addPopups","args":[20.7363000232726,9.56859776750207,"Random popup",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]}],"limits":{"lat":[-56.1017565429211,51.0687145683914],"lng":[-172.487139841542,131.293085636571]}},"evals":[],"jsHooks":[]}</script>
 <p class="caption">
 Map of completely random data
 </p>
