@@ -1,7 +1,7 @@
 ---
-title: "I have the best titles"
-author: Your name here
-subtitle: Subtitle here if desired
+title: "GEO-511 Semester Project"
+author: Austin Izzo
+subtitle: A look into community solar projects across the US. 
 ---
 
 # Introduction
