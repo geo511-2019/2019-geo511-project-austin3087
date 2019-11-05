@@ -5,84 +5,119 @@ subtitle: A look into community solar projects across the US.
 ---
 
 # Introduction
-My really awesome and complete introduction will go here.  
+With the expansion of solar energy throughout the United States in the past year, community solar projects have become increasingly popular. Community solar projects often consist of a partnership between the public, government entities and the business sector to install solar energy throughout a community. The outcomes of such programs can be prosperous for all entities involved. Although a seemingly common sense solution to part of the nation's energy challenge, community solar projects are a relatively new concept and spatial trends in where these projects are taking place. 
+
+Research Question: In this analysis, the goal will be to identify what role the political climate (state and county level), and public perception of global warming will have in installment of community solar projects. 
+
 
 # Materials and methods
 
-Narrative and most code will go here.  Describe what you are doing and show how to do it (with code).
+1. Extract all data into R creating separate tables for each. 
+2. Convert source 1 into a tibble 
+3. Join source 1 and source 3 by county 
+4. Identify what county each solar project is in and create column in source 2 table for this. 
+5. Create two maps on with the counties either red or blue or political affiliation and the other displaying a color gradient (fill in ggplot) to display the public perception for each county. 
+7. Now the solar projects will be mapped to each maps. 
+8. Sections will be created in the report for the impact of either public perception or political       affiliation. 
+9. Within each section the visuals that will be included will be: 
+  1. Scatter Plot of variable vs solar projects
+  2. Scatter Plot of variable vs size of system
+  3. Summary Tables for each variable 
 
-You can do bullets like this:
-
-* The first most important thing
-* The second most important thing
-* The third most important thing
-
-You can do numbers like this:
-
-1. The first most important thing
-2. The second most important thing
-3. The third most important thing
-
-See [http://rmarkdown.rstudio.com/](http://rmarkdown.rstudio.com/) for all the amazing things you can do.
-
-
-Here's my first code chunk.
-```{r}
-1+2
-```
 
 Load any required packages in a code chunk (you may need to install some packages):
 
 ```{r, message=F, warning=F}
+#Load neccessary Libraries
+library(dbplyr)
+library(jsonlite)
+#install.packages("xml2")
+library(xml2)
+library(readr)
+#install.packages("readxl")
+library(readxl)
+library(sf)
+library(ggplot2)
+library(sf)
 library(tidyverse)
-library(leaflet)
-library(kableExtra)
-knitr::opts_chunk$set(cache=TRUE)  # cache the results for quick compiling
+#install.packages("spData")
+library(spData)
+#install.packages("maps")
+library(maps)
 ```
 
 ## Download and clean all required data
 ```{r}
-n=20
-data=data.frame(x=runif(n,-180,180),
-                y=runif(n,-60,60),
-                size = runif(n, 5, 20),
-                category = factor(
-                  sample(letters[1:5], n, replace = TRUE)
-                  ),
-                value = rnorm(n))
+#Get that Data 
+#DSIRE_url<- "http://programs.dsireusa.org/api/v1/getprograms/json"
+#DSIRE_data <- fromJSON(DSIRE_url)
+
+#DSIRE_url_xml <- "http://programs.dsireusa.org/api/v1/getprograms/xml"
+#DSIRE_data2 <- read_html(DSIRE_url_xml)
+
+NREL_url <- "https://data.nrel.gov/files/114/NREL_Community_Solar_Project_List_6_28_2019%20FINAL.xlsx"
+NREL_path <- "NREL_Community_Solar_Project_List_6_28_2019FINAL.xlsx"
+NREL_Data <- read_xlsx(NREL_path, sheet = 2)
+names(NREL_Data) <- c("Project", "City", "State", "Utility", "Size(kWh)","Year","Latitude", "Longitude")
+
+Harvard_url <- "https://dataverse.harvard.edu/api/access/datafile/:persistentId?persistentId=doi:10.7910/DVN/VOQCHQ/FQ9NBF"
+Harvard_Data <- read_tsv(Harvard_url)
+
+state_geom<- map_data("state")
+```
+Create spatial distribution plot: 
+```{r}
+plot1 <- ggplot()+
+  geom_polygon(data = map_data("state"), aes(x = long, y = lat, group = group, col = "blue"))+
+  coord_fixed(1.5)+
+  geom_point(NREL_Data, mapping = aes(x = Longitude , y = Latitude, col = "red", alpha = .8))+
+  theme_void()
 ```
 
-```{r, results='asis'}
-data %>% 
-  slice(1:10) %>% #show only 1:n rows
-  kable(digits=2,align="c")%>% #make table and round to two digits
-  kable_styling(bootstrap_options = 
-                  c("striped", "hover", "condensed", "responsive")) #apply other formatting
-```
-
-Add any additional processing steps here.
 
 # Results
 
-Show tables, plots, etc. and describe them.
-
-```{r, fig.width=6, fig.height=3, fig.cap="Map of completely random data"}
-m <- leaflet(data) %>% 
-  addTiles() %>% 
-  addCircleMarkers(~x, ~y, radius = ~size,color = ~as.factor(category)) %>% 
-  addPopups(~x[2], ~y[2], "Random popup")
-m  # a map with the default OSM tile layer
+Spatial Distibution of Community Solar Installations - Provided by NREL
+```{r, fig.width=8, fig.height=4, fig.cap="Map of completely random data", echo = FALSE, warning = FALSE}
+plot1 <- ggplot()+
+  geom_polygon(data = map_data("state"), aes(x = long, y = lat, group = group, col = "blue"))+
+  coord_fixed(1.5)+
+  geom_point(NREL_Data, mapping = aes(x = Longitude , y = Latitude, col = "red", alpha = .8))+
+  theme_void()
+plot1
 ```
 
-
-```{r}
-data %>% 
-  ggplot(aes(x=x,y=y,col=category))+
-  geom_point()
-```
 
 # Conclusions
 
 What have you learned?  Are there any broader implications?
 
-# References
+# References/Data Sources
+
+Source 1: Yale Climate Opinion Maps 2018  
+  <pre>
+  Source: https://climatecommunication.yale.edu/visualizations-data/ycom-us-2018/?est=happening&type=value&geo=county  
+  Type: CSV  
+  Data to be used: State, County, global warming happening?  
+  Purpose: Identify the public perception of global warming at a county level  
+   </pre>
+  
+Source 2: NREL Community Solar Projects  
+  <pre>
+  Source: https://data.nrel.gov/submissions/114  
+  Type: CSV  
+  Data to be used: Project name, lattitude, longitude, system size, year of interconnection  
+  Purpose: To identify where community solar projects happening 
+  </pre>
+  
+Source 3: MIT Election Lab County Political Affiliation  
+  <pre>
+  Source: https://dataverse.harvard.edu/file.xhtml?persistentId=doi:10.7910/DVN/VOQCHQ/FQ9NBF  
+  Type: CSV  
+  Data to be used: County, Party, Year  
+  Purpose: To identify political affiliation of counties  
+  </pre>
+
+
+
+

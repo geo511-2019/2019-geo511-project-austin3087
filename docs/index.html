@@ -15,7 +15,7 @@
 
 <title>GEO-511 Semester Project</title>
 
-<script src="site_libs/jquery-1.12.4/jquery.min.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/darkly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -27,15 +27,6 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
-<script src="site_libs/htmlwidgets-1.3/htmlwidgets.js"></script>
-<link href="site_libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
-<script src="site_libs/leaflet-1.3.1/leaflet.js"></script>
-<link href="site_libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
-<script src="site_libs/Proj4Leaflet-1.0.1/proj4-compressed.js"></script>
-<script src="site_libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
-<link href="site_libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
-<script src="site_libs/leaflet-binding-2.0.2/leaflet.js"></script>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -376,269 +367,120 @@ div.tocify {
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>My really awesome and complete introduction will go here.</p>
+<p>With the expansion of solar energy throughout the United States in the past year, community solar projects have become increasingly popular. Community solar projects often consist of a partnership between the public, government entities and the business sector to install solar energy throughout a community. The outcomes of such programs can be prosperous for all entities involved. Although a seemingly common sense solution to part of the nation’s energy challenge, community solar projects are a relatively new concept and spatial trends in where these projects are taking place.</p>
+<p>Research Question: In this analysis, the goal will be to identify what role the political climate (state and county level), and public perception of global warming will have in installment of community solar projects.</p>
 </div>
 <div id="materials-and-methods" class="section level1">
 <h1>Materials and methods</h1>
-<p>Narrative and most code will go here. Describe what you are doing and show how to do it (with code).</p>
-<p>You can do bullets like this:</p>
-<ul>
-<li>The first most important thing</li>
-<li>The second most important thing</li>
-<li>The third most important thing</li>
-</ul>
-<p>You can do numbers like this:</p>
 <ol style="list-style-type: decimal">
-<li>The first most important thing</li>
-<li>The second most important thing</li>
-<li>The third most important thing</li>
+<li>Extract all data into R creating separate tables for each.</li>
+<li>Convert source 1 into a tibble</li>
+<li>Join source 1 and source 3 by county</li>
+<li>Identify what county each solar project is in and create column in source 2 table for this.</li>
+<li>Create two maps on with the counties either red or blue or political affiliation and the other displaying a color gradient (fill in ggplot) to display the public perception for each county.</li>
+<li>Now the solar projects will be mapped to each maps.</li>
+<li>Sections will be created in the report for the impact of either public perception or political affiliation.</li>
+<li>Within each section the visuals that will be included will be:</li>
+<li>Scatter Plot of variable vs solar projects</li>
+<li>Scatter Plot of variable vs size of system</li>
+<li>Summary Tables for each variable</li>
 </ol>
-<p>See <a href="http://rmarkdown.rstudio.com/" class="uri">http://rmarkdown.rstudio.com/</a> for all the amazing things you can do.</p>
-<p>Here’s my first code chunk.</p>
-<pre class="r"><code>1+2</code></pre>
-<pre><code>## [1] 3</code></pre>
 <p>Load any required packages in a code chunk (you may need to install some packages):</p>
-<pre class="r"><code>library(tidyverse)
-library(leaflet)
-library(kableExtra)
-knitr::opts_chunk$set(cache=TRUE)  # cache the results for quick compiling</code></pre>
+<pre class="r"><code>#Load neccessary Libraries
+library(dbplyr)
+library(jsonlite)
+#install.packages(&quot;xml2&quot;)
+library(xml2)
+library(readr)
+#install.packages(&quot;readxl&quot;)
+library(readxl)
+library(sf)
+library(ggplot2)
+library(sf)
+library(tidyverse)
+#install.packages(&quot;spData&quot;)
+library(spData)
+#install.packages(&quot;maps&quot;)
+library(maps)</code></pre>
 <div id="download-and-clean-all-required-data" class="section level2">
 <h2>Download and clean all required data</h2>
-<pre class="r"><code>n=20
-data=data.frame(x=runif(n,-180,180),
-                y=runif(n,-60,60),
-                size = runif(n, 5, 20),
-                category = factor(
-                  sample(letters[1:5], n, replace = TRUE)
-                  ),
-                value = rnorm(n))</code></pre>
-<pre class="r"><code>data %&gt;% 
-  slice(1:10) %&gt;% #show only 1:n rows
-  kable(digits=2,align=&quot;c&quot;)%&gt;% #make table and round to two digits
-  kable_styling(bootstrap_options = 
-                  c(&quot;striped&quot;, &quot;hover&quot;, &quot;condensed&quot;, &quot;responsive&quot;)) #apply other formatting</code></pre>
-<table class="table table-striped table-hover table-condensed table-responsive" style="margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:center;">
-x
-</th>
-<th style="text-align:center;">
-y
-</th>
-<th style="text-align:center;">
-size
-</th>
-<th style="text-align:center;">
-category
-</th>
-<th style="text-align:center;">
-value
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;">
--132.36
-</td>
-<td style="text-align:center;">
-8.56
-</td>
-<td style="text-align:center;">
-12.04
-</td>
-<td style="text-align:center;">
-b
-</td>
-<td style="text-align:center;">
-0.05
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-9.57
-</td>
-<td style="text-align:center;">
-20.74
-</td>
-<td style="text-align:center;">
-9.77
-</td>
-<td style="text-align:center;">
-a
-</td>
-<td style="text-align:center;">
--0.35
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-131.29
-</td>
-<td style="text-align:center;">
-37.54
-</td>
-<td style="text-align:center;">
-7.97
-</td>
-<td style="text-align:center;">
-c
-</td>
-<td style="text-align:center;">
--0.80
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
--84.88
-</td>
-<td style="text-align:center;">
-11.36
-</td>
-<td style="text-align:center;">
-6.11
-</td>
-<td style="text-align:center;">
-c
-</td>
-<td style="text-align:center;">
-0.31
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
--58.18
-</td>
-<td style="text-align:center;">
--0.29
-</td>
-<td style="text-align:center;">
-15.21
-</td>
-<td style="text-align:center;">
-d
-</td>
-<td style="text-align:center;">
--0.70
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-75.55
-</td>
-<td style="text-align:center;">
--22.51
-</td>
-<td style="text-align:center;">
-13.98
-</td>
-<td style="text-align:center;">
-c
-</td>
-<td style="text-align:center;">
-0.31
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-60.98
-</td>
-<td style="text-align:center;">
--5.59
-</td>
-<td style="text-align:center;">
-5.02
-</td>
-<td style="text-align:center;">
-c
-</td>
-<td style="text-align:center;">
-0.22
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
--103.35
-</td>
-<td style="text-align:center;">
--56.10
-</td>
-<td style="text-align:center;">
-17.39
-</td>
-<td style="text-align:center;">
-a
-</td>
-<td style="text-align:center;">
--0.43
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
--92.60
-</td>
-<td style="text-align:center;">
-36.31
-</td>
-<td style="text-align:center;">
-18.66
-</td>
-<td style="text-align:center;">
-a
-</td>
-<td style="text-align:center;">
--0.03
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
--76.68
-</td>
-<td style="text-align:center;">
--37.32
-</td>
-<td style="text-align:center;">
-19.61
-</td>
-<td style="text-align:center;">
-e
-</td>
-<td style="text-align:center;">
-0.39
-</td>
-</tr>
-</tbody>
-</table>
-<p>Add any additional processing steps here.</p>
+<pre class="r"><code>#Get that Data 
+#DSIRE_url&lt;- &quot;http://programs.dsireusa.org/api/v1/getprograms/json&quot;
+#DSIRE_data &lt;- fromJSON(DSIRE_url)
+
+#DSIRE_url_xml &lt;- &quot;http://programs.dsireusa.org/api/v1/getprograms/xml&quot;
+#DSIRE_data2 &lt;- read_html(DSIRE_url_xml)
+
+NREL_url &lt;- &quot;https://data.nrel.gov/files/114/NREL_Community_Solar_Project_List_6_28_2019%20FINAL.xlsx&quot;
+NREL_path &lt;- &quot;NREL_Community_Solar_Project_List_6_28_2019FINAL.xlsx&quot;
+NREL_Data &lt;- read_xlsx(NREL_path, sheet = 2)
+names(NREL_Data) &lt;- c(&quot;Project&quot;, &quot;City&quot;, &quot;State&quot;, &quot;Utility&quot;, &quot;Size(kWh)&quot;,&quot;Year&quot;,&quot;Latitude&quot;, &quot;Longitude&quot;)
+
+Harvard_url &lt;- &quot;https://dataverse.harvard.edu/api/access/datafile/:persistentId?persistentId=doi:10.7910/DVN/VOQCHQ/FQ9NBF&quot;
+Harvard_Data &lt;- read_tsv(Harvard_url)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   year = col_double(),
+##   state = col_character(),
+##   state_po = col_character(),
+##   county = col_character(),
+##   FIPS = col_double(),
+##   office = col_character(),
+##   candidate = col_character(),
+##   party = col_character(),
+##   candidatevotes = col_double(),
+##   totalvotes = col_double(),
+##   version = col_double()
+## )</code></pre>
+<pre class="r"><code>state_geom&lt;- map_data(&quot;state&quot;)</code></pre>
+<p>Create spatial distribution plot:</p>
+<pre class="r"><code>plot1 &lt;- ggplot()+
+  geom_polygon(data = map_data(&quot;state&quot;), aes(x = long, y = lat, group = group, col = &quot;blue&quot;))+
+  coord_fixed(1.5)+
+  geom_point(NREL_Data, mapping = aes(x = Longitude , y = Latitude, col = &quot;red&quot;, alpha = .8))+
+  theme_void()</code></pre>
 </div>
 </div>
 <div id="results" class="section level1">
 <h1>Results</h1>
-<p>Show tables, plots, etc. and describe them.</p>
-<pre class="r"><code>m &lt;- leaflet(data) %&gt;% 
-  addTiles() %&gt;% 
-  addCircleMarkers(~x, ~y, radius = ~size,color = ~as.factor(category)) %&gt;% 
-  addPopups(~x[2], ~y[2], &quot;Random popup&quot;)
-m  # a map with the default OSM tile layer</code></pre>
+Spatial Distibution of Community Solar Installations - Provided by NREL
 <div class="figure">
-<div id="htmlwidget-cdb424b81813f39c5b30" style="width:576px;height:288px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-cdb424b81813f39c5b30">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addCircleMarkers","args":[[8.5635791067034,20.7363000232726,37.5427547749132,11.3649075943977,-0.290871039032936,-22.5144264288247,-5.5930679384619,-56.1017565429211,36.3107837922871,-37.3201411217451,-32.9004563950002,-14.1579715814441,49.6115218475461,-48.0182508286089,-29.5329117681831,49.5012978091836,8.85446391999722,1.02046374231577,51.0687145683914,-32.8046523034573],[-132.362332753837,9.56859776750207,131.293085636571,-84.8766321782023,-58.1813824363053,75.5467252805829,60.9791968390346,-103.35242732428,-92.6035083085299,-76.6829640045762,104.822396971285,121.991649633273,-172.487139841542,41.1043936572969,-143.514738650993,-59.0297306142747,-151.19845812209,-8.38263105601072,-132.947895107791,93.4529837686568],[12.0377049664967,9.77224143221974,7.96722735511139,6.11457757418975,15.2135133801494,13.9796147972811,5.02414007671177,17.3884389037266,18.6555972346105,19.6109206741676,15.5704109650105,13.7630042491946,10.4680720565375,8.01193548715673,11.6650045604911,12.9819407581817,12.7518314309418,18.7496899615508,8.79939005710185,14.0588067355566],null,null,{"interactive":true,"className":"","stroke":true,"color":["b","a","c","c","d","c","c","a","a","e","b","b","a","b","b","a","b","c","c","c"],"weight":5,"opacity":0.5,"fill":true,"fillColor":["b","a","c","c","d","c","c","a","a","e","b","b","a","b","b","a","b","c","c","c"],"fillOpacity":0.2},null,null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addPopups","args":[20.7363000232726,9.56859776750207,"Random popup",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]}],"limits":{"lat":[-56.1017565429211,51.0687145683914],"lng":[-172.487139841542,131.293085636571]}},"evals":[],"jsHooks":[]}</script>
+<img src="index_files/figure-html/unnamed-chunk-4-1.png" alt="Map of completely random data" width="768" />
 <p class="caption">
 Map of completely random data
 </p>
 </div>
-<pre class="r"><code>data %&gt;% 
-  ggplot(aes(x=x,y=y,col=category))+
-  geom_point()</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 <div id="conclusions" class="section level1">
 <h1>Conclusions</h1>
 <p>What have you learned? Are there any broader implications?</p>
 </div>
-<div id="references" class="section level1">
-<h1>References</h1>
+<div id="referencesdata-sources" class="section level1">
+<h1>References/Data Sources</h1>
+Source 1: Yale Climate Opinion Maps 2018<br />
+
+<pre>
+  Source: https://climatecommunication.yale.edu/visualizations-data/ycom-us-2018/?est=happening&type=value&geo=county  
+  Type: CSV  
+  Data to be used: State, County, global warming happening?  
+  Purpose: Identify the public perception of global warming at a county level  
+   </pre>
+Source 2: NREL Community Solar Projects<br />
+
+<pre>
+  Source: https://data.nrel.gov/submissions/114  
+  Type: CSV  
+  Data to be used: Project name, lattitude, longitude, system size, year of interconnection  
+  Purpose: To identify where community solar projects happening 
+  </pre>
+Source 3: MIT Election Lab County Political Affiliation<br />
+
+<pre>
+  Source: https://dataverse.harvard.edu/file.xhtml?persistentId=doi:10.7910/DVN/VOQCHQ/FQ9NBF  
+  Type: CSV  
+  Data to be used: County, Party, Year  
+  Purpose: To identify political affiliation of counties  
+  </pre>
 </div>
 
 <!-- give the footer some space -->
