@@ -44,16 +44,36 @@ library(tidyverse)
 library(spData)
 #install.packages("maps")
 library(maps)
+library(formattable)
 ```
 
 ## Download and clean all required data
 ```{r}
 #Get that Data 
-#DSIRE_url<- "http://programs.dsireusa.org/api/v1/getprograms/json"
+#DSIRE_url <- "http://programs.dsireusa.org/api/v1/getprograms/json"
 #DSIRE_data <- fromJSON(DSIRE_url)
 
 #DSIRE_url_xml <- "http://programs.dsireusa.org/api/v1/getprograms/xml"
 #DSIRE_data2 <- read_html(DSIRE_url_xml)
+
+#Load in all of the DSIRE datasets
+DSIRE_program <- read_csv("program.csv")
+DSIRE_parameter_set <- read_csv("parameter_set.csv")
+DSIRE_parameter <- read_csv("parameter.csv")
+DSIRE_state <- read_csv("state.csv")
+names(DSIRE_state)<- c("state_id", "abbreviation", "name", "is_territory")
+DSIRE_program_tech <- read_csv("program_technology.csv")
+DSIRE_technology <- read_csv("technology.csv")
+DSIRE_technology_category <- read_csv("technology_category.csv")
+
+#join the DSIRE datasets by their relevant keys creating one "Final" table with relevant information
+DSIRE_program2 <- inner_join(DSIRE_program,DSIRE_state, by = "state_id")
+DSIRE_program3 <- inner_join(DSIRE_program2, DSIRE_parameter_set, by = c("id" = "program_id"))
+DSIRE_program4 <- inner_join(DSIRE_program3,DSIRE_parameter, by = c("id" = "parameter_set_id"))
+DSIRE_program5 <- inner_join(DSIRE_program4,DSIRE_program_tech, by = c("id" = "program_id"))
+DSIRE_program6 <- inner_join(DSIRE_program5, DSIRE_technology, by = c("technology_id" = "id"))
+DSIRE_program_final <- inner_join(DSIRE_program6, DSIRE_technology_category, by = c("technology_id" = "id"))
+
 
 NREL_url <- "https://data.nrel.gov/files/114/NREL_Community_Solar_Project_List_6_28_2019%20FINAL.xlsx"
 NREL_path <- "NREL_Community_Solar_Project_List_6_28_2019FINAL.xlsx"
@@ -65,28 +85,58 @@ Harvard_Data <- read_tsv(Harvard_url)
 
 state_geom<- map_data("state")
 ```
+Count the number of solar incentives per state
+```{r}
+#Count the number of solar incentives per state
+DSIRE_program_table <- DSIRE_program_final%>%
+  filter(is_entire_state == 1)%>%
+  filter(name.x.x == "Solar Photovoltaics")
+incentives_total_state <- stats::aggregate(DSIRE_program_table$is_entire_state, by =list(state_id = DSIRE_program_table$state_id), FUN = sum )
+
+#join to find state name 
+DSIRE_program_table2 <- inner_join(incentives_total_state, DSIRE_state,  by = c("state_id" = "state_id"))%>%
+  filter(is_territory == 0)
+DSIRE_program_table2$name <- tolower(DSIRE_program_table2$name)
+
+#add state geometry
+DSIRE_program_table3 <- full_join(DSIRE_program_table2, state_geom, by = c("name" = "region"))
+```
+
+
+
+
+
 Create spatial distribution plot: 
 ```{r}
 plot1 <- ggplot()+
-  geom_polygon(data = map_data("state"), aes(x = long, y = lat, group = group, col = "blue"))+
+  geom_polygon(data = DSIRE_program_table3, aes(x = long, y = lat, group = group, col = "blue", fill= as.numeric(x)))+
   coord_fixed(1.5)+
   geom_point(NREL_Data, mapping = aes(x = Longitude , y = Latitude, col = "red", alpha = .8))+
   theme_void()
 ```
 
+Create Aggregation tables of solar installations
+```{r}
+kwh_total_state <- stats::aggregate(NREL_Data$`Size(kWh)`, by =list(State=NREL_Data$State), FUN = sum )
+kwh_mean_state <- stats::aggregate(NREL_Data$`Size(kWh)`, by =list(State=NREL_Data$State), FUN = mean )
+```
 
 # Results
 
 Spatial Distibution of Community Solar Installations - Provided by NREL
 ```{r, fig.width=8, fig.height=4, fig.cap="Map of completely random data", echo = FALSE, warning = FALSE}
-plot1 <- ggplot()+
-  geom_polygon(data = map_data("state"), aes(x = long, y = lat, group = group, col = "blue"))+
-  coord_fixed(1.5)+
-  geom_point(NREL_Data, mapping = aes(x = Longitude , y = Latitude, col = "red", alpha = .8))+
-  theme_void()
 plot1
 ```
 
+Show the total amount of power generated per state (kWh)
+```{r, fig.width=8, fig.height=4, fig.cap="Map of completely random data", echo = FALSE, warning = FALSE}
+formattable(kwh_total_state)
+```
+
+Show the mean size of community solar installations (kWh)
+```{r, fig.width=8, fig.height=4, fig.cap="Map of completely random data", echo = FALSE, warning = FALSE}
+formattable(kwh_mean_state)
+```
 
 # Conclusions
 
