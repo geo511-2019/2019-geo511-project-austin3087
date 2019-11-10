@@ -359,7 +359,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">GEO-511 Semester Project</h1>
-<h3 class="subtitle">A look into community solar projects across the US.</h3>
+<h3 class="subtitle">Modeling the relationship between community solar projects and the incentives in the US.</h3>
 <h4 class="author">Austin Izzo</h4>
 
 </div>
@@ -368,7 +368,7 @@ div.tocify {
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
 <p>With the expansion of solar energy throughout the United States in the past year, community solar projects have become increasingly popular. Community solar projects often consist of a partnership between the public, government entities and the business sector to install solar energy throughout a community. The outcomes of such programs can be prosperous for all entities involved. Although a seemingly common sense solution to part of the nation’s energy challenge, community solar projects are a relatively new concept and spatial trends in where these projects are taking place.</p>
-<p>Research Question: In this analysis, the goal will be to identify what role the political climate (state and county level), and public perception of global warming will have in installment of community solar projects.</p>
+<p>Research Question: In this analysis, the goal will be to identify what role the political climate (state and county level), and public perception of global warming will have in installment of community solar projects..</p>
 </div>
 <div id="materials-and-methods" class="section level1">
 <h1>Materials and methods</h1>
@@ -385,7 +385,12 @@ div.tocify {
 <li>Scatter Plot of variable vs size of system</li>
 <li>Summary Tables for each variable</li>
 </ol>
-<p>Load any required packages in a code chunk (you may need to install some packages):</p>
+</div>
+<div id="code-chunks" class="section level1">
+<h1>Code Chunks</h1>
+<ol style="list-style-type: decimal">
+<li>Load any required packages:</li>
+</ol>
 <pre class="r"><code>#Load neccessary Libraries
 library(dbplyr)
 library(jsonlite)
@@ -403,142 +408,109 @@ library(spData)
 #install.packages(&quot;maps&quot;)
 library(maps)
 library(formattable)</code></pre>
-<div id="download-and-clean-all-required-data" class="section level2">
-<h2>Download and clean all required data</h2>
-<pre class="r"><code>#Get that Data 
-#DSIRE_url &lt;- &quot;http://programs.dsireusa.org/api/v1/getprograms/json&quot;
-#DSIRE_data &lt;- fromJSON(DSIRE_url)
-
-#DSIRE_url_xml &lt;- &quot;http://programs.dsireusa.org/api/v1/getprograms/xml&quot;
-#DSIRE_data2 &lt;- read_html(DSIRE_url_xml)
-
-#Load in all of the DSIRE datasets
-DSIRE_program &lt;- read_csv(&quot;program.csv&quot;)</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   .default = col_character(),
-##   id = col_double(),
-##   state_id = col_double(),
-##   is_entire_state = col_double(),
-##   implementing_sector_id = col_double(),
-##   program_category_id = col_double(),
-##   program_type_id = col_double(),
-##   created_by_user_id = col_double(),
-##   updated_ts = col_datetime(format = &quot;&quot;),
-##   created_ts = col_datetime(format = &quot;&quot;),
-##   published = col_double(),
-##   start_date = col_datetime(format = &quot;&quot;),
-##   end_date = col_datetime(format = &quot;&quot;),
-##   fromSir = col_double()
-## )</code></pre>
-<pre><code>## See spec(...) for full column specifications.</code></pre>
-<pre class="r"><code>DSIRE_parameter_set &lt;- read_csv(&quot;parameter_set.csv&quot;)</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   id = col_double(),
-##   program_id = col_double()
-## )</code></pre>
-<pre class="r"><code>DSIRE_parameter &lt;- read_csv(&quot;parameter.csv&quot;)</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   id = col_double(),
-##   parameter_set_id = col_double(),
-##   source = col_character(),
-##   qualifier = col_character(),
-##   amount = col_double(),
-##   units = col_character()
-## )</code></pre>
-<pre class="r"><code>DSIRE_state &lt;- read_csv(&quot;state.csv&quot;)</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   id = col_double(),
-##   abbreviation = col_character(),
-##   name = col_character(),
-##   is_territory = col_double()
-## )</code></pre>
-<pre class="r"><code>names(DSIRE_state)&lt;- c(&quot;state_id&quot;, &quot;abbreviation&quot;, &quot;name&quot;, &quot;is_territory&quot;)
-DSIRE_program_tech &lt;- read_csv(&quot;program_technology.csv&quot;)</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   program_id = col_double(),
-##   technology_id = col_double()
-## )</code></pre>
-<pre class="r"><code>DSIRE_technology &lt;- read_csv(&quot;technology.csv&quot;)</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   id = col_double(),
-##   name = col_character(),
-##   technology_category_id = col_double(),
-##   active = col_double()
-## )</code></pre>
-<pre class="r"><code>DSIRE_technology_category &lt;- read_csv(&quot;technology_category.csv&quot;)</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   id = col_double(),
-##   name = col_character(),
-##   energy_category_id = col_double()
-## )</code></pre>
-<pre class="r"><code>#join the DSIRE datasets by their relevant keys creating one &quot;Final&quot; table with relevant information
-DSIRE_program2 &lt;- inner_join(DSIRE_program,DSIRE_state, by = &quot;state_id&quot;)
-DSIRE_program3 &lt;- inner_join(DSIRE_program2, DSIRE_parameter_set, by = c(&quot;id&quot; = &quot;program_id&quot;))
-DSIRE_program4 &lt;- inner_join(DSIRE_program3,DSIRE_parameter, by = c(&quot;id&quot; = &quot;parameter_set_id&quot;))
-DSIRE_program5 &lt;- inner_join(DSIRE_program4,DSIRE_program_tech, by = c(&quot;id&quot; = &quot;program_id&quot;))
-DSIRE_program6 &lt;- inner_join(DSIRE_program5, DSIRE_technology, by = c(&quot;technology_id&quot; = &quot;id&quot;))
-DSIRE_program_final &lt;- inner_join(DSIRE_program6, DSIRE_technology_category, by = c(&quot;technology_id&quot; = &quot;id&quot;))
-
-
+<ol start="2" style="list-style-type: decimal">
+<li>Download and clean all required data</li>
+</ol>
+<pre class="r"><code>#Load in all of the DSIRE datasets
 NREL_url &lt;- &quot;https://data.nrel.gov/files/114/NREL_Community_Solar_Project_List_6_28_2019%20FINAL.xlsx&quot;
 NREL_path &lt;- &quot;NREL_Community_Solar_Project_List_6_28_2019FINAL.xlsx&quot;
 NREL_Data &lt;- read_xlsx(NREL_path, sheet = 2)
 names(NREL_Data) &lt;- c(&quot;Project&quot;, &quot;City&quot;, &quot;State&quot;, &quot;Utility&quot;, &quot;Size(kWh)&quot;,&quot;Year&quot;,&quot;Latitude&quot;, &quot;Longitude&quot;)
 
 Harvard_url &lt;- &quot;https://dataverse.harvard.edu/api/access/datafile/:persistentId?persistentId=doi:10.7910/DVN/VOQCHQ/FQ9NBF&quot;
-Harvard_Data &lt;- read_tsv(Harvard_url)</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   year = col_double(),
-##   state = col_character(),
-##   state_po = col_character(),
-##   county = col_character(),
-##   FIPS = col_double(),
-##   office = col_character(),
-##   candidate = col_character(),
-##   party = col_character(),
-##   candidatevotes = col_double(),
-##   totalvotes = col_double(),
-##   version = col_double()
-## )</code></pre>
-<pre class="r"><code>state_geom&lt;- map_data(&quot;state&quot;)</code></pre>
-<p>Count the number of solar incentives per state</p>
-<pre class="r"><code>#Count the number of solar incentives per state
+Harvard_Data &lt;- read_tsv(Harvard_url)
+
+state_geom&lt;- map_data(&quot;state&quot;)
+
+DSIRE_program &lt;- read_csv(&quot;https://raw.githubusercontent.com/geo511-2019/2019-geo511-project-austin3087/master/program.csv&quot;)
+DSIRE_parameter_set &lt;- read_csv(&quot;https://raw.githubusercontent.com/geo511-2019/2019-geo511-project-austin3087/master/parameter_set.csv&quot;)
+DSIRE_parameter &lt;- read_csv(&quot;https://raw.githubusercontent.com/geo511-2019/2019-geo511-project-austin3087/master/parameter.csv&quot;)
+DSIRE_state &lt;- read_csv(&quot;https://raw.githubusercontent.com/geo511-2019/2019-geo511-project-austin3087/master/state.csv&quot;)
+names(DSIRE_state)&lt;- c(&quot;state_id&quot;, &quot;abbreviation&quot;, &quot;name&quot;, &quot;is_territory&quot;)
+DSIRE_program_tech &lt;- read_csv(&quot;https://raw.githubusercontent.com/geo511-2019/2019-geo511-project-austin3087/master/program_technology.csv&quot;)
+DSIRE_technology &lt;- read_csv(&quot;https://raw.githubusercontent.com/geo511-2019/2019-geo511-project-austin3087/master/technology.csv&quot;)
+DSIRE_technology_category &lt;- read_csv(&quot;https://raw.githubusercontent.com/geo511-2019/2019-geo511-project-austin3087/master/technology_category.csv&quot;)</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Join the DSIRE datasets <img src="Data_Structure.png" alt="Data Structure Representation" /></li>
+</ol>
+<pre class="r"><code>#Join the DSIRE datasets by their relevant keys creating one &quot;Final&quot; table with relevant information. See data relationship chart above to identify how tables are related. 
+DSIRE_program2 &lt;- inner_join(DSIRE_program,DSIRE_state, by = &quot;state_id&quot;)
+DSIRE_program3 &lt;- inner_join(DSIRE_program2, DSIRE_parameter_set, by = c(&quot;id&quot; = &quot;program_id&quot;))
+DSIRE_program4 &lt;- inner_join(DSIRE_program3,DSIRE_parameter, by = c(&quot;id&quot; = &quot;parameter_set_id&quot;))
+DSIRE_program5 &lt;- inner_join(DSIRE_program4,DSIRE_program_tech, by = c(&quot;id&quot; = &quot;program_id&quot;))
+DSIRE_program6 &lt;- inner_join(DSIRE_program5, DSIRE_technology, by = c(&quot;technology_id&quot; = &quot;id&quot;))
+DSIRE_program_final &lt;- inner_join(DSIRE_program6, DSIRE_technology_category, by = c(&quot;technology_id&quot; = &quot;id&quot;))</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>Identify number &amp; mean of solar incentives per state</li>
+</ol>
+<pre class="r"><code>#Filter table for solar photovoltaics
 DSIRE_program_table &lt;- DSIRE_program_final%&gt;%
   filter(is_entire_state == 1)%&gt;%
-  filter(name.x.x == &quot;Solar Photovoltaics&quot;)
-incentives_total_state &lt;- stats::aggregate(DSIRE_program_table$is_entire_state, by =list(state_id = DSIRE_program_table$state_id), FUN = sum )
-
-#join to find state name 
-DSIRE_program_table2 &lt;- inner_join(incentives_total_state, DSIRE_state,  by = c(&quot;state_id&quot; = &quot;state_id&quot;))%&gt;%
+  filter(name.x.x == &quot;Solar Photovoltaics&quot;)%&gt;%
   filter(is_territory == 0)
-DSIRE_program_table2$name &lt;- tolower(DSIRE_program_table2$name)
+kwh_total_state &lt;- DSIRE_program_table%&gt;%
+  group_by(name.y)%&gt;%
+   summarize(Total = n())
+names(kwh_total_state)&lt;- c(&quot;State&quot;,&quot;Total&quot;)
+kwh_total_state$State &lt;- tolower(kwh_total_state$State)
 
-#add state geometry
-DSIRE_program_table3 &lt;- full_join(DSIRE_program_table2, state_geom, by = c(&quot;name&quot; = &quot;region&quot;))</code></pre>
-<p>Create spatial distribution plot:</p>
-<pre class="r"><code>plot1 &lt;- ggplot()+
-  geom_polygon(data = DSIRE_program_table3, aes(x = long, y = lat, group = group, col = &quot;blue&quot;, fill= as.numeric(x)))+
+kwh_mean_state &lt;- DSIRE_program_table%&gt;%
+  group_by(name.y)%&gt;%
+  filter(units == &quot;$&quot;)%&gt;% #note only using $ values that are given, multiple other units given too in table but needed to be filtered for this analysis
+  summarize(Total = mean(amount))
+names(kwh_mean_state)&lt;- c(&quot;State&quot;, &quot;Average&quot;)
+kwh_mean_state$State &lt;- tolower(kwh_mean_state$State)</code></pre>
+<ol start="6" style="list-style-type: decimal">
+<li>Create spatial distribution plot:</li>
+</ol>
+<pre class="r"><code>DSIRE_program_table1 &lt;- full_join(kwh_total_state, state_geom, by = c(&quot;State&quot; = &quot;region&quot;))
+#Plot just Community Locationsadd state geometry to DSIRE data to plot
+plot1 &lt;- ggplot()+
+  geom_polygon(data = state_geom, aes(x = long, y = lat, group = group, col = &quot;blue&quot;))+
   coord_fixed(1.5)+
   geom_point(NREL_Data, mapping = aes(x = Longitude , y = Latitude, col = &quot;red&quot;, alpha = .8))+
   theme_void()</code></pre>
-<p>Create Aggregation tables of solar installations</p>
-<pre class="r"><code>kwh_total_state &lt;- stats::aggregate(NREL_Data$`Size(kWh)`, by =list(State=NREL_Data$State), FUN = sum )
-kwh_mean_state &lt;- stats::aggregate(NREL_Data$`Size(kWh)`, by =list(State=NREL_Data$State), FUN = mean )</code></pre>
-</div>
+<ol start="7" style="list-style-type: decimal">
+<li>Plot Spatial Distribution along w/ shaded mean incentive per state</li>
+</ol>
+<pre class="r"><code>DSIRE_program_table2 &lt;- full_join(kwh_mean_state, state_geom, by = c(&quot;State&quot; = &quot;region&quot;))
+
+plot2 &lt;- ggplot()+
+  geom_polygon(data = DSIRE_program_table2, aes(x = long, y = lat, group = group, col = &quot;blue&quot;, fill = Average))+
+  coord_fixed(1.5)+
+  geom_point(NREL_Data, mapping = aes(x = Longitude , y = Latitude, col = &quot;red&quot;, alpha = .8))+
+  theme_void()</code></pre>
+<ol start="8" style="list-style-type: decimal">
+<li>Plot Spatial Distribution along w/ shaded quantity incentive per state</li>
+</ol>
+<pre class="r"><code>DSIRE_program_table3 &lt;- full_join(kwh_total_state, state_geom, by = c(&quot;State&quot; = &quot;region&quot;))
+
+plot3 &lt;- ggplot()+
+  geom_polygon(data = DSIRE_program_table3, aes(x = long, y = lat, group = group, col = &quot;blue&quot;, fill = Total))+
+  coord_fixed(1.5)+
+  geom_point(NREL_Data, mapping = aes(x = Longitude , y = Latitude, col = &quot;red&quot;, alpha = .8))+
+  theme_void()+
+  scale_fill_gradient(low = &quot;#496692&quot;, high = &quot;#000E23&quot;)</code></pre>
 </div>
 <div id="results" class="section level1">
 <h1>Results</h1>
 Spatial Distibution of Community Solar Installations - Provided by NREL
 <div class="figure">
-<img src="index_files/figure-html/unnamed-chunk-6-1.png" alt="Map of completely random data" width="768" />
+<img src="index_files/figure-html/unnamed-chunk-8-1.png" alt="Map of completely random data" width="768" />
+<p class="caption">
+Map of completely random data
+</p>
+</div>
+Spatial Distibution of Community Solar Installations w/ Incentives shaded per $ - Provided by NREL &amp; DSIRE data
+<div class="figure">
+<img src="index_files/figure-html/unnamed-chunk-9-1.png" alt="Map of completely random data" width="768" />
+<p class="caption">
+Map of completely random data
+</p>
+</div>
+Spatial Distibution of Community Solar Installations w/ Incentives shaded per quantity - Provided by NREL &amp; DSIRE data
+<div class="figure">
+<img src="index_files/figure-html/unnamed-chunk-10-1.png" alt="Map of completely random data" width="768" />
 <p class="caption">
 Map of completely random data
 </p>
@@ -551,329 +523,305 @@ Map of completely random data
 State
 </th>
 <th style="text-align:right;">
-x
+Total
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:right;">
-AR
+hawaii
 </td>
 <td style="text-align:right;">
-2243.00000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-AZ
-</td>
-<td style="text-align:right;">
-49247.00000
+24
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-CA
+rhode island
 </td>
 <td style="text-align:right;">
-132270.00000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-CO
-</td>
-<td style="text-align:right;">
-67021.34538
+22
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-DC
+maryland
 </td>
 <td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-DE
-</td>
-<td style="text-align:right;">
-229.50000
+19
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-FL
+washington
 </td>
 <td style="text-align:right;">
-35717.60000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-GA
-</td>
-<td style="text-align:right;">
-45154.92000
+14
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-IA
+kentucky
 </td>
 <td style="text-align:right;">
-4495.28615
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-ID
-</td>
-<td style="text-align:right;">
-100.00000
+13
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-IL
+new mexico
 </td>
 <td style="text-align:right;">
-626.50000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-IN
-</td>
-<td style="text-align:right;">
-250.40000
+12
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-KS
+north carolina
 </td>
 <td style="text-align:right;">
-3100.00000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-KY
-</td>
-<td style="text-align:right;">
-8559.70000
+12
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-MA
+illinois
 </td>
 <td style="text-align:right;">
-253701.39746
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-MD
-</td>
-<td style="text-align:right;">
-17.52531
+10
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-ME
+montana
 </td>
 <td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-MI
-</td>
-<td style="text-align:right;">
-7448.38154
+10
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-MN
+utah
 </td>
 <td style="text-align:right;">
-509633.26154
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-MO
-</td>
-<td style="text-align:right;">
-17541.20000
+10
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-MT
+delaware
 </td>
 <td style="text-align:right;">
-1313.00000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-NC
-</td>
-<td style="text-align:right;">
-1816.56400
+8
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-ND
+michigan
 </td>
 <td style="text-align:right;">
-102.00000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-NE
-</td>
-<td style="text-align:right;">
-12289.00000
+8
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-NJ
+new york
 </td>
 <td style="text-align:right;">
-211.00000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-NM
-</td>
-<td style="text-align:right;">
-75.92308
+7
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-NV
+indiana
 </td>
 <td style="text-align:right;">
-17590.00000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-NY
-</td>
-<td style="text-align:right;">
-23198.99077
+6
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-OH
+iowa
 </td>
 <td style="text-align:right;">
-940.06154
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-OK
-</td>
-<td style="text-align:right;">
-24808.52000
+6
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-OR
+minnesota
 </td>
 <td style="text-align:right;">
-3413.96154
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-PA
-</td>
-<td style="text-align:right;">
-63.00000
+6
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-SC
+mississippi
 </td>
 <td style="text-align:right;">
-2197.00000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-TN
-</td>
-<td style="text-align:right;">
-3399.21500
+6
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-TX
+new jersey
 </td>
 <td style="text-align:right;">
-69095.00000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-UT
-</td>
-<td style="text-align:right;">
-20096.12308
+6
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-VA
+louisiana
 </td>
 <td style="text-align:right;">
-550.00000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-VT
-</td>
-<td style="text-align:right;">
-11232.24000
+5
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-WA
+oklahoma
 </td>
 <td style="text-align:right;">
-3295.10846
+5
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-WI
+oregon
 </td>
 <td style="text-align:right;">
-7490.99231
+5
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+alabama
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+florida
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+nebraska
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+pennsylvania
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+south carolina
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+tennessee
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+texas
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+arizona
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+connecticut
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+missouri
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+vermont
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+california
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+colorado
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+maine
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+massachusetts
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+nevada
+</td>
+<td style="text-align:right;">
+1
 </td>
 </tr>
 </tbody>
@@ -886,329 +834,217 @@ WI
 State
 </th>
 <th style="text-align:right;">
-x
+Average
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:right;">
-AR
+arizona
 </td>
 <td style="text-align:right;">
-560.750000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-AZ
-</td>
-<td style="text-align:right;">
-8207.833333
+999999.9999
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-CA
+south carolina
 </td>
 <td style="text-align:right;">
-8818.000000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-CO
-</td>
-<td style="text-align:right;">
-797.873159
+500017.5000
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-DC
+utah
 </td>
 <td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-DE
-</td>
-<td style="text-align:right;">
-229.500000
+200300.0000
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-FL
+montana
 </td>
 <td style="text-align:right;">
-5952.933333
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-GA
-</td>
-<td style="text-align:right;">
-6450.702857
+33383.3333
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-IA
+rhode island
 </td>
 <td style="text-align:right;">
-299.685744
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-ID
-</td>
-<td style="text-align:right;">
-50.000000
+12500.0000
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-IL
+north carolina
 </td>
 <td style="text-align:right;">
-313.250000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-IN
-</td>
-<td style="text-align:right;">
-83.466667
+9000.0000
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-KS
+louisiana
 </td>
 <td style="text-align:right;">
-1033.333333
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-KY
-</td>
-<td style="text-align:right;">
-2853.233333
+7500.0000
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-MA
+minnesota
 </td>
 <td style="text-align:right;">
-1231.560182
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-MD
-</td>
-<td style="text-align:right;">
-8.762657
+6000.0000
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-ME
+oregon
 </td>
 <td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-MI
-</td>
-<td style="text-align:right;">
-827.597949
+3200.0000
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-MN
+maryland
 </td>
 <td style="text-align:right;">
-2438.436658
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-MO
-</td>
-<td style="text-align:right;">
-2505.885714
+2371.4286
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-MT
+texas
 </td>
 <td style="text-align:right;">
-164.125000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-NC
-</td>
-<td style="text-align:right;">
-121.104267
+1125.0000
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-ND
+tennessee
 </td>
 <td style="text-align:right;">
-102.000000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-NE
-</td>
-<td style="text-align:right;">
-2048.166667
+1000.0000
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-NJ
+iowa
 </td>
 <td style="text-align:right;">
-211.000000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-NM
-</td>
-<td style="text-align:right;">
-75.923077
+800.0000
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-NV
+oklahoma
 </td>
 <td style="text-align:right;">
-8795.000000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-NY
-</td>
-<td style="text-align:right;">
-539.511413
+750.3333
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-OH
+illinois
 </td>
 <td style="text-align:right;">
-58.753846
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-OK
-</td>
-<td style="text-align:right;">
-4134.753333
+620.0000
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-OR
+washington
 </td>
 <td style="text-align:right;">
-341.396154
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-PA
-</td>
-<td style="text-align:right;">
-63.000000
+620.0000
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-SC
+mississippi
 </td>
 <td style="text-align:right;">
-219.700000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-TN
-</td>
-<td style="text-align:right;">
-849.803750
+600.0000
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-TX
+missouri
 </td>
 <td style="text-align:right;">
-4064.411765
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-UT
-</td>
-<td style="text-align:right;">
-6698.707692
+600.0000
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-VA
+colorado
 </td>
 <td style="text-align:right;">
-550.000000
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-VT
-</td>
-<td style="text-align:right;">
-374.408000
+500.0000
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-WA
+new mexico
 </td>
 <td style="text-align:right;">
-99.851772
+312.5000
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-WI
+michigan
 </td>
 <td style="text-align:right;">
-440.646606
+225.0000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+kentucky
+</td>
+<td style="text-align:right;">
+150.0000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+florida
+</td>
+<td style="text-align:right;">
+51.0000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+california
+</td>
+<td style="text-align:right;">
+50.0000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+new york
+</td>
+<td style="text-align:right;">
+9.0000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+pennsylvania
+</td>
+<td style="text-align:right;">
+4.5000
 </td>
 </tr>
 </tbody>
@@ -1216,7 +1052,6 @@ WI
 </div>
 <div id="conclusions" class="section level1">
 <h1>Conclusions</h1>
-<p>What have you learned? Are there any broader implications?</p>
 </div>
 <div id="referencesdata-sources" class="section level1">
 <h1>References/Data Sources</h1>
