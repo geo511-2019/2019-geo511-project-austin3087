@@ -5,23 +5,23 @@ subtitle: Modeling the relationship between community solar projects and the inc
 ---
 
 # Introduction
-With the expansion of solar energy throughout the United States in the past year, community solar projects have become increasingly popular. Community solar projects often consist of a partnership between the public, government entities and the business sector to install solar energy throughout a community. The outcomes of such programs can be prosperous for all entities involved. Although a seemingly common sense solution to part of the nation's energy challenge, community solar projects are a relatively new concept and spatial trends in where these projects are taking place. 
+With the expansion of solar energy throughout the United States in the past year, community solar projects have become increasingly popular. Community solar projects often consist of a partnership between the public, government entities, and the business sector to install solar energy throughout a community. The outcomes of such programs can be prosperous for all entities involved. Although a seemingly common sense solution to part of the nation's energy challenge, community solar projects are a relatively new concept and there are spatial trends in where these projects are taking place. 
 
 Research Question: In this analysis, the goal will be to identify what role financial incentives play in the installment of projects in the US. 
 
 
-# Materials and methods
+# Materials and methods  
 
 1. Extract all data into R creating separate tables for each. 
 2. Convert source 1 into a tibble 
 3. Join source 1 and source 3 by county 
 4. Identify what county each solar project is in and create column in source 2 table for this. 
-5. Create two maps on with the counties either red or blue or political affiliation and the other displaying a color gradient (fill in ggplot) to display the public perception for each county. 
+5. Create two maps: one with the counties colorized red or blue to show political affiliation, and the other displaying a color gradient (fill in ggplot) to display the public perception for each county.    
 7. Now the solar projects will be mapped to each maps. 
 8. Sections will be created in the report for the impact of either public perception or political       affiliation. 
 9. Within each section the visuals that will be included will be: 
   1. Scatter Plot of variable vs solar projects
-  2. Scatter Plot of variable vs size of system
+  2. Scatter Plot of variable vs size of system 
   3. Summary Tables for each variable 
 
 #Code Chunks 
@@ -30,27 +30,21 @@ Research Question: In this analysis, the goal will be to identify what role fina
 #Load neccessary Libraries
 library(dbplyr)
 library(jsonlite)
-#install.packages("xml2")
 library(xml2)
 library(readr)
-#install.packages("readxl")
 library(readxl)
 library(sf)
 library(ggplot2)
 library(sf)
 library(tidyverse)
-#install.packages("spData")
 library(spData)
-#install.packages("maps")
 library(maps)
 library(formattable)
 ```
 
-2. Download and clean all required data 
+2. Download and clean all required data  
 ```{r, warning = FALSE, message = FALSE}
-#Load in all of the DSIRE datasets
-NREL_url <- "https://data.nrel.gov/files/114/NREL_Community_Solar_Project_List_6_28_2019%20FINAL.xlsx"
-NREL_path <- "NREL_Community_Solar_Project_List_6_28_2019FINAL.xlsx"
+NREL_path <- "NREL_Community_Solar_Project_List_6_28_2019FINAL.xlsx" 
 NREL_Data <- read_xlsx(NREL_path, sheet = 2)
 names(NREL_Data) <- c("Project", "City", "State", "Utility", "Size(kWh)","Year","Latitude", "Longitude")
 
@@ -69,10 +63,10 @@ DSIRE_technology <- read_csv("https://raw.githubusercontent.com/geo511-2019/2019
 DSIRE_technology_category <- read_csv("https://raw.githubusercontent.com/geo511-2019/2019-geo511-project-austin3087/master/technology_category.csv")
 ```
 
-4. Join the DSIRE datasets
+4. Join the DSIRE datasets 
 ![Data Structure Representation](Data_Structure.png)
 ```{r, warning = FALSE, message = FALSE}
-#Join the DSIRE datasets by their relevant keys creating one "Final" table with relevant information. See data relationship chart above to identify how tables are related. 
+#Join the DSIRE datasets by their relevant keys creating one "Final" table with relevant information. See data relationship chart above to identify how tables are related.  
 DSIRE_program2 <- inner_join(DSIRE_program,DSIRE_state, by = "state_id")
 DSIRE_program3 <- inner_join(DSIRE_program2, DSIRE_parameter_set, by = c("id" = "program_id"))
 DSIRE_program4 <- inner_join(DSIRE_program3,DSIRE_parameter, by = c("id" = "parameter_set_id"))
@@ -83,7 +77,7 @@ DSIRE_program_final <- inner_join(DSIRE_program6, DSIRE_technology_category, by 
 
 5. Identify number & mean of solar incentives per state  
 ```{r, warning = FALSE}
-#Filter table for solar photovoltaics
+#Filter table for solar photovoltaics 
 DSIRE_program_table <- DSIRE_program_final%>%
   filter(is_entire_state == 1)%>%
   filter(name.x.x == "Solar Photovoltaics")%>%
@@ -96,7 +90,7 @@ kwh_total_state$State <- tolower(kwh_total_state$State)
 
 kwh_mean_state <- DSIRE_program_table%>%
   group_by(name.y)%>%
-  filter(units == "$")%>% #note only using $ values that are given, multiple other units given too in table but needed to be filtered for this analysis
+  filter(units == "$")%>% #note only using $ values that are given, multiple other units given in table but needed to be filtered for this analysis
   summarize(Total = mean(amount))
 names(kwh_mean_state)<- c("State", "Average")
 kwh_mean_state$State <- tolower(kwh_mean_state$State)
@@ -106,8 +100,8 @@ kwh_mean_state$State <- tolower(kwh_mean_state$State)
 6. Create spatial distribution plot: 
 ```{r, warning = FALSE}
 DSIRE_program_table1 <- full_join(kwh_total_state, state_geom, by = c("State" = "region"))
-#Plot just Community Locationsadd state geometry to DSIRE data to plot
-plot1 <- ggplot()+
+#Plot just Community Locations add state geometry to DSIRE data to plot
+plot1 <- ggplot()+  
   geom_polygon(data = state_geom, aes(x = long, y = lat, group = group, col = "blue"))+
   coord_fixed(1.5)+
   geom_point(NREL_Data, mapping = aes(x = Longitude , y = Latitude, col = "red", alpha = .8))+
@@ -116,13 +110,13 @@ plot1 <- ggplot()+
 
 7. Plot Spatial Distribution along w/ shaded mean incentive per state
 ```{r, warning = FALSE}
-DSIRE_program_table2 <- full_join(kwh_mean_state, state_geom, by = c("State" = "region"))
+DSIRE_program_table2 <- full_join(kwh_mean_state, state_geom, by = c("State" = "region"))  
 
 plot2 <- ggplot()+
   geom_polygon(data = DSIRE_program_table2, aes(x = long, y = lat, group = group, col = "blue", fill = Average))+
   coord_fixed(1.5)+
   geom_point(NREL_Data, mapping = aes(x = Longitude , y = Latitude, col = "red", alpha = .8))+
-  theme_void()
+  theme_void() 
 ```
 
 8. Plot Spatial Distribution along w/ shaded quantity incentive per state
@@ -140,28 +134,28 @@ plot3 <- ggplot()+
 # Results
 
 Spatial Distibution of Community Solar Installations - Provided by NREL
-```{r, fig.width=8, fig.height=4, fig.cap="Map of completely random data", echo = FALSE, warning = FALSE}
+```{r, fig.width=8, fig.height=4, echo = FALSE, warning = FALSE}
 plot1
 ```
 
 Spatial Distibution of Community Solar Installations w/ Incentives shaded per $ - Provided by NREL & DSIRE data
-```{r, fig.width=8, fig.height=4, fig.cap="Map of completely random data", echo = FALSE, warning = FALSE}
+```{r, fig.width=8, fig.height=4, echo = FALSE, warning = FALSE}
 plot2
 ```
 Spatial Distibution of Community Solar Installations w/ Incentives shaded per quantity - Provided by NREL & DSIRE data
-```{r, fig.width=8, fig.height=4, fig.cap="Map of completely random data", echo = FALSE, warning = FALSE}
+```{r, fig.width=8, fig.height=4, echo = FALSE, warning = FALSE}
 plot3
 ```
-Show the total amount of power generated per state (kWh) 
-```{r, fig.width=8, fig.height=4, fig.cap="Map of completely random data", echo = FALSE, warning = FALSE}
+Show the total amount of power generated per state (kWh)   
+```{r, fig.width=8, fig.height=4, echo = FALSE, warning = FALSE}
 kwh_total_state_table<- kwh_total_state%>%
   group_by(State)%>%
   arrange(desc(Total))
 formattable(kwh_total_state_table)
 ```
 
-Show the mean size of community solar installations (kWh) 
-```{r, fig.width=8, fig.height=4, fig.cap="Map of completely random data", echo = FALSE, warning = FALSE}
+Show the mean size of community solar installations (kWh)   
+```{r, fig.width=8, fig.height=4, echo = FALSE, warning = FALSE}
 kwh_mean_state_table<- kwh_mean_state%>%
   arrange(desc(Average))
 formattable(kwh_mean_state_table)
