@@ -4,13 +4,13 @@ author: Austin Izzo
 subtitle: Modeling the relationship between community solar projects and the incentives in the US. 
 ---
 
-# Introduction
+# Introduction 
 With the expansion of solar energy throughout the United States in the past year, community solar projects have become increasingly popular. Community solar projects often consist of a partnership between the public, government entities and the business sector to install solar energy throughout a community. The outcomes of such programs can be prosperous for all entities involved. Although a seemingly common sense solution to part of the nation's energy challenge, community solar projects are a relatively new concept and spatial trends in where these projects are taking place. 
 
 Research Question: In this analysis, the goal will be to identify what role financial incentives play in the installment of projects in the US. 
 
 
-# Materials and methods
+# Materials and methods 
 
 1. Extract all data into R creating separate tables for each. 
 2. Convert source 1 into a tibble 
@@ -29,6 +29,7 @@ Research Question: In this analysis, the goal will be to identify what role fina
 ```{r, message=F, warning=F}
 #Load neccessary Libraries
 library(dbplyr)
+library(dplyr)
 library(jsonlite)
 #install.packages("xml2")
 library(xml2)
@@ -44,6 +45,7 @@ library(spData)
 #install.packages("maps")
 library(maps)
 library(formattable)
+library(kableExtra)
 ```
 
 2. Download and clean all required data 
@@ -157,14 +159,18 @@ Show the total amount of power generated per state (kWh)
 kwh_total_state_table<- kwh_total_state%>%
   group_by(State)%>%
   arrange(desc(Total))
-formattable(kwh_total_state_table)
+formattable(kwh_total_state_table)%>%
+kable()%>%
+    kable_styling(full_width=FALSE)
 ```
 
 Show the mean size of community solar installations (kWh) 
 ```{r, fig.width=8, fig.height=4, fig.cap="Map of completely random data", echo = FALSE, warning = FALSE}
 kwh_mean_state_table<- kwh_mean_state%>%
   arrange(desc(Average))
-formattable(kwh_mean_state_table)
+formattable(kwh_mean_state_table)%>%
+kable()%>%
+    kable_styling(full_width=FALSE)
 ```
 
 # Conclusions
