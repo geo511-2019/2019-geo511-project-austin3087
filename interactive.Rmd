@@ -1,0 +1,111 @@
+---
+title: "GEO-511 Semester Project"
+author: Austin Izzo
+subtitle: Modeling the relationship between community solar projects and the incentives in the US. 
+output:
+  html_document: 
+    code_folding: hide
+    
+---
+
+#Code Chunks 
+1. Load any required packages:
+```{r, message=F, warning=F}
+#Load neccessary Libraries
+library(dbplyr)
+library(jsonlite)
+#install.packages("xml2")
+library(xml2)
+library(readr)
+#install.packages("readxl")
+library(readxl)
+library(sf)
+library(ggplot2)
+library(sf)
+library(tidyverse)
+#install.packages("spData")
+library(spData)
+#install.packages("maps")
+library(maps)
+library(formattable)
+library(knitr)
+library(kableExtra)
+```
+
+2. Download and clean all required data 
+```{r, warning = FALSE, message = FALSE}
+#Load in all of the DSIRE datasets
+NREL_url <- "https://data.nrel.gov/files/114/NREL_Community_Solar_Project_List_6_28_2019%20FINAL.xlsx"
+NREL_path <- "NREL_Community_Solar_Project_List_6_28_2019FINAL.xlsx"
+NREL_Data <- read_xlsx(NREL_path, sheet = 2)
+names(NREL_Data) <- c("Project", "City", "State", "Utility", "Size(kWh)","Year","Latitude", "Longitude")
+
+Harvard_url <- "https://dataverse.harvard.edu/api/access/datafile/:persistentId?persistentId=doi:10.7910/DVN/VOQCHQ/FQ9NBF"
+Harvard_Data <- read_tsv(Harvard_url)
+
+state_geom<- map_data("state")
+
+DSIRE_program <- read_csv("https://raw.githubusercontent.com/geo511-2019/2019-geo511-project-austin3087/master/program.csv")
+DSIRE_parameter_set <- read_csv("https://raw.githubusercontent.com/geo511-2019/2019-geo511-project-austin3087/master/parameter_set.csv")
+DSIRE_parameter <- read_csv("https://raw.githubusercontent.com/geo511-2019/2019-geo511-project-austin3087/master/parameter.csv")
+DSIRE_state <- read_csv("https://raw.githubusercontent.com/geo511-2019/2019-geo511-project-austin3087/master/state.csv")
+names(DSIRE_state)<- c("state_id", "abbreviation", "name", "is_territory")
+DSIRE_program_tech <- read_csv("https://raw.githubusercontent.com/geo511-2019/2019-geo511-project-austin3087/master/program_technology.csv")
+DSIRE_technology <- read_csv("https://raw.githubusercontent.com/geo511-2019/2019-geo511-project-austin3087/master/technology.csv")
+DSIRE_technology_category <- read_csv("https://raw.githubusercontent.com/geo511-2019/2019-geo511-project-austin3087/master/technology_category.csv")
+```
+
+4. Join the DSIRE datasets
+![Data Structure Representation](Data_Structure.png)
+```{r, warning = FALSE, message = FALSE}
+#Join the DSIRE datasets by their relevant keys creating one "Final" table with relevant information. See data relationship chart above to identify how tables are related. 
+DSIRE_program2 <- inner_join(DSIRE_program,DSIRE_state, by = "state_id")%>%
+  inner_join(DSIRE_parameter_set, by = c("id" = "program_id"))%>%
+  inner_join(DSIRE_parameter, by = c("id" = "parameter_set_id"))%>%
+  inner_join(DSIRE_program_tech, by = c("id" = "program_id"))%>%
+  inner_join(DSIRE_technology, by = c("technology_id" = "id"))
+DSIRE_program_final <- inner_join(DSIRE_program2, DSIRE_technology_category, by = c("technology_id" = "id"))
+```
+
+5. Identify number & mean of solar incentives per state  
+```{r, warning = FALSE}
+#Filter table for solar photovoltaics
+DSIRE_program_table <- DSIRE_program_final%>%
+  filter(is_entire_state == 1)%>%
+  filter(name.x.x == "Solar Photovoltaics")%>%
+  filter(is_territory == 0)
+kwh_total_state <- DSIRE_program_table%>%
+  group_by(name.y)%>%
+   summarize(Total = n())
+names(kwh_total_state)<- c("State","Total")
+kwh_total_state$State <- tolower(kwh_total_state$State)
+
+kwh_mean_state <- DSIRE_program_table%>%
+  group_by(name.y)%>%
+  filter(units == "$")%>% #note only using $ values that are given, multiple other units given too in table but needed to be filtered for this analysis
+  summarize(Total = mean(amount))
+names(kwh_mean_state)<- c("State", "Average")
+kwh_mean_state$State <- tolower(kwh_mean_state$State)
+
+```
+
+9. Create an interactive plot of solar projects using leaflet
+```{r, fig.width=8, fig.height=3, echo = FALSE, warning = FALSE}
+library(leaflet)
+leaflet <- leaflet(NREL_Data)%>%
+  addTiles()%>%
+  addAwesomeMarkers(lng = ~Longitude, lat = ~Latitude, popup = ~as.character(Project), clusterOptions = markerClusterOptions())
+```
+
+# Results
+
+An interactive plot of solar projects using leaflet
+```{r, fig.width=8, fig.height=3, echo = FALSE, warning = FALSE}
+leaflet
+```
+
+                                                                                      
+
+
+
+
