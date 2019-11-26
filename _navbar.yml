@@ -3,5 +3,5 @@ type: inverse
 left:
   - text: "Home"
     href: index.html
-  - text: "Interactive"
+  - text: "Interactive Map"
     href: interactive.html
