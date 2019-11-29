@@ -200,31 +200,6 @@ datatable(kwh_mean_state_table)%>%
 # Conclusion
 
 
-# References/Data Sources
- 
-Source 1: Yale Climate Opinion Maps 2018  
-  <pre>
-  Source: https://climatecommunication.yale.edu/visualizations-data/ycom-us-2018/?est=happening&type=value&geo=county  
-  Type: CSV  
-  Data to be used: State, County, global warming happening?  
-  Purpose: Identify the public perception of global warming at a county level  
-   </pre>
-  
-Source 2: NREL Community Solar Projects  
-  <pre>
-  Source: https://data.nrel.gov/submissions/114  
-  Type: CSV  
-  Data to be used: Project name, lattitude, longitude, system size, year of interconnection  
-  Purpose: To identify where community solar projects happening 
-  </pre>
-  
-Source 3: MIT Election Lab County Political Affiliation  
-  <pre>
-  Source: https://dataverse.harvard.edu/file.xhtml?persistentId=doi:10.7910/DVN/VOQCHQ/FQ9NBF  
-  Type: CSV  
-  Data to be used: County, Party, Year  
-  Purpose: To identify political affiliation of counties  
-  </pre>
 
 
 
