@@ -1,5 +1,5 @@
 ---
-title: "GEO-511 Semester Project"
+title: "GEO-511 Semester Project "
 author: Austin Izzo
 subtitle: Modeling the relationship between community solar projects and the incentives in the US. 
 output:
