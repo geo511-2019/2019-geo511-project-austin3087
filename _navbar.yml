@@ -5,3 +5,5 @@ left:
     href: index.html
   - text: "Interactive Map"
     href: interactive.html
+  - text: "References/Sources"
+    href: sources.html
