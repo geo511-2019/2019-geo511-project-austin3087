@@ -1,5 +1,5 @@
 ---
-title: "GEO-511 Semester Project "
+title: "GEO-511 Semester Project - Interactive Map"
 author: Austin Izzo
 subtitle: Modeling the relationship between community solar projects and the incentives in the US. 
 output:
@@ -9,8 +9,8 @@ output:
 ---
 
 #Code Chunks 
-1. Load any required packages:
-```{r, message=F, warning=F}
+
+```{r, message=F, warning=F, echo = FALSE}
 #Load neccessary Libraries
 library(dbplyr)
 library(jsonlite)
@@ -32,8 +32,8 @@ library(knitr)
 library(kableExtra)
 ```
 
-2. Download and clean all required data 
-```{r, warning = FALSE, message = FALSE}
+
+```{r, warning = FALSE, message = FALSE, echo = FALSE}
 #Load in all of the DSIRE datasets
 NREL_url <- "https://data.nrel.gov/files/114/NREL_Community_Solar_Project_List_6_28_2019%20FINAL.xlsx"
 NREL_path <- "NREL_Community_Solar_Project_List_6_28_2019FINAL.xlsx"
@@ -55,9 +55,7 @@ DSIRE_technology <- read_csv("https://raw.githubusercontent.com/geo511-2019/2019
 DSIRE_technology_category <- read_csv("https://raw.githubusercontent.com/geo511-2019/2019-geo511-project-austin3087/master/technology_category.csv")
 ```
 
-4. Join the DSIRE datasets
-![Data Structure Representation](Data_Structure.png)
-```{r, warning = FALSE, message = FALSE}
+```{r, warning = FALSE, message = FALSE, echo = FALSE}
 #Join the DSIRE datasets by their relevant keys creating one "Final" table with relevant information. See data relationship chart above to identify how tables are related. 
 DSIRE_program2 <- inner_join(DSIRE_program,DSIRE_state, by = "state_id")%>%
   inner_join(DSIRE_parameter_set, by = c("id" = "program_id"))%>%
@@ -67,8 +65,8 @@ DSIRE_program2 <- inner_join(DSIRE_program,DSIRE_state, by = "state_id")%>%
 DSIRE_program_final <- inner_join(DSIRE_program2, DSIRE_technology_category, by = c("technology_id" = "id"))
 ```
 
-5. Identify number & mean of solar incentives per state  
-```{r, warning = FALSE}
+
+```{r, warning = FALSE, echo = FALSE}
 #Filter table for solar photovoltaics
 DSIRE_program_table <- DSIRE_program_final%>%
   filter(is_entire_state == 1)%>%
@@ -89,8 +87,8 @@ kwh_mean_state$State <- tolower(kwh_mean_state$State)
 
 ```
 
-9. Create an interactive plot of solar projects using leaflet
-```{r, fig.width=8, fig.height=3, echo = FALSE, warning = FALSE}
+Code to  Create an interactive plot of solar projects using leaflet
+```{r, fig.width=8, fig.height=3, warning = FALSE}
 library(leaflet)
 leaflet <- leaflet(NREL_Data)%>%
   addTiles()%>%
