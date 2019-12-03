@@ -23,25 +23,9 @@ With the expansion of solar energy throughout the United States in the past year
 
 Research Question: In this analysis, the goal will be to identify what role financial incentives play in the installment of projects in the US. 
 
-*** 
-
-# Materials and methods
-
-1. Extract all data into R creating separate tables for each. The an extensive list of the community solar projects will be retrieved from the NREL database. Multiple tables with data relating to solar power incentives will be retrieved from the DSIRE database (the csv files held on github). Lastly, the basemaps will be sourced from the spData package. 
-2. Convert source 1 into a tibble 
-3. Join source 1 and source 3 by county 
-4. Identify what county each solar project is in and create column in source 2 table for this. 
-5. Create two maps on with the counties either red or blue or political affiliation and the other displaying a color gradient (fill in ggplot) to display the public perception for each county. 
-7. Now the solar projects will be mapped to each maps. 
-8. Sections will be created in the report for the impact of either public perception or political       affiliation. 
-9. Within each section the visuals that will be included will be: 
-  1. Scatter Plot of variable vs solar projects
-  2. Scatter Plot of variable vs size of system
-  3. Summary Tables for each variable 
-
 ***
 
-#Code Chunks 
+#Materials & Methods
 1. Load any required packages:
 ```{r, message=F, warning=F}
 #Load neccessary Libraries
@@ -65,7 +49,10 @@ library(knitr)
 library(kableExtra)
 ```
 
-2. Download and clean all required data 
+2. Download and clean all required data. Creating seperate tables for each source of data <br> 
+* NREL - list of the community solar projects
+* DSIRE (Database of State Incentives for Renewable Energy) - Multiple tables with data relating to solar power incentives 
+* spData package -  Basemaps of US 
 ```{r, warning = FALSE, message = FALSE}
 #Load in all of the DSIRE datasets
 NREL_url <- "https://data.nrel.gov/files/114/NREL_Community_Solar_Project_List_6_28_2019%20FINAL.xlsx"
@@ -100,7 +87,7 @@ DSIRE_program2 <- inner_join(DSIRE_program,DSIRE_state, by = "state_id")%>%
 DSIRE_program_final <- inner_join(DSIRE_program2, DSIRE_technology_category, by = c("technology_id" = "id"))
 ```
 
-5. Identify number & mean of solar incentives per state  
+5. Identify total count & mean value of awarded $ of solar incentives per state  
 ```{r, warning = FALSE}
 #Filter table for solar photovoltaics
 DSIRE_program_table <- DSIRE_program_final%>%
@@ -122,7 +109,7 @@ kwh_mean_state$State <- tolower(kwh_mean_state$State)
 
 ```
 
-6. Create spatial distribution plot: 
+6. Create custom themes (with and without legend)
 ```{r, warning = FALSE}
 
 #Create Custom theme 
@@ -130,7 +117,9 @@ theme_black_nol<- theme(plot.background = element_rect(fill = '#222222'), panel.
 
 theme_black<- theme(plot.background = element_rect(fill = '#222222'), panel.background = element_rect(fill = NA),panel.border = element_rect(fill = NA), panel.grid = element_line(color = NA), axis.title = element_blank(), plot.margin = unit(c(0,0,0,0),"cm"), axis.text = element_blank(), axis.line = element_blank())
 
-
+```
+7. Create spatial distribution plot to identify locations of projects
+```{r, warning = FALSE}
 
 DSIRE_program_table1 <- full_join(kwh_total_state, state_geom, by = c("State" = "region"))
 
@@ -142,7 +131,7 @@ plot1 <- ggplot()+
   theme_black_nol
 ```
 
-7. Plot Spatial Distribution along w/ shaded mean incentive per state
+8. Plot Spatial Distribution along w/ shaded mean incentive per state
 ```{r, warning = FALSE}
 DSIRE_program_table2 <- full_join(kwh_mean_state, state_geom, by = c("State" = "region"))
 
@@ -154,7 +143,7 @@ plot2 <- ggplot()+
   scale_fill_gradient(low = "#496692", high = "#000E23")
 ```
 
-8. Plot spatial distribution along w/ shaded quantity incentive per state
+9. Plot spatial distribution along w/ shaded quantity incentives per state
 ```{r, warning = FALSE}
 DSIRE_program_table3 <- full_join(kwh_total_state, state_geom, by = c("State" = "region"))
 
@@ -165,7 +154,6 @@ plot3 <- ggplot()+
   theme_black+
   scale_fill_gradient(low = "#496692", high = "#000E23")
 ```
-
 
 ***
 

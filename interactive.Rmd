@@ -18,8 +18,9 @@ color:black!important;
 }
 </style>  
 
+***
 
-#Code Chunks 
+#Materials & Methods
 
 ```{r, message=F, warning=F, echo = FALSE}
 #Load neccessary Libraries
@@ -97,8 +98,7 @@ names(kwh_mean_state)<- c("State", "Average")
 kwh_mean_state$State <- tolower(kwh_mean_state$State)
 
 ```
-
-Code to  Create an interactive plot of solar projects using leaflet
+1. Create an interactive plot of solar projects using leaflet using NREL Data
 ```{r, fig.width=8, fig.height=3, warning = FALSE}
 library(leaflet)
 leaflet <- leaflet(NREL_Data)%>%
@@ -106,9 +106,10 @@ leaflet <- leaflet(NREL_Data)%>%
   addAwesomeMarkers(lng = ~Longitude, lat = ~Latitude, popup = paste("Project:", NREL_Data$Project,"<br>", "Location:", NREL_Data$City, "<br>", "State:", NREL_Data$State,"<br>", "Size (kWh):", NREL_Data$`Size(kWh)`), clusterOptions = markerClusterOptions())
 ```
 
+***
+
 # Results
 
-An interactive plot of solar projects using leaflet
 ```{r, fig.width=8, fig.height=6, echo = FALSE, warning = FALSE}
 leaflet
 ```

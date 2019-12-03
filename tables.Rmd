@@ -1,6 +1,6 @@
 ---
 title: "Raw Data"
-date: "December 3, 2019"
+subtitle: Modeling the relationship between community solar projects and the incentives in the US. 
 output: html_document
 ---
 
