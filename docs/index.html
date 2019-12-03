@@ -454,7 +454,7 @@ DSIRE_technology &lt;- read_csv(&quot;https://raw.githubusercontent.com/geo511-2
 DSIRE_technology_category &lt;- read_csv(&quot;https://raw.githubusercontent.com/geo511-2019/2019-geo511-project-austin3087/master/technology_category.csv&quot;)</code></pre>
 <ol start="4" style="list-style-type: decimal">
 <li>Join the DSIRE datasets<br />
-<br> <img src="docs/Data_Structure.PNG" alt="Data Structure Representation" /> <br> (<a href="https://github.com/geo511-2019/2019-geo511-project-austin3087/blob/master/docs/Data_Structure.PNG" class="uri">https://github.com/geo511-2019/2019-geo511-project-austin3087/blob/master/docs/Data_Structure.PNG</a>)</li>
+<br> <img src="docs/Data_Structure.PNG" alt="Data Structure Representation" /></li>
 </ol>
 <pre class="r"><code>#Join the DSIRE datasets by their relevant keys creating one &quot;Final&quot; table with relevant information. See data relationship chart above to identify how tables are related. 
 DSIRE_program2 &lt;- inner_join(DSIRE_program,DSIRE_state, by = &quot;state_id&quot;)%&gt;%
@@ -489,7 +489,9 @@ kwh_mean_state$State &lt;- tolower(kwh_mean_state$State)</code></pre>
 <pre class="r"><code>#Create Custom theme 
 theme_black_nol&lt;- theme(plot.background = element_rect(fill = &#39;#222222&#39;), panel.background = element_rect(fill = NA),panel.border = element_rect(fill = NA), panel.grid = element_line(color = NA), axis.title = element_blank(), legend.position = &quot;none&quot;, plot.margin = unit(c(0,0,0,0),&quot;cm&quot;), axis.text = element_blank(), axis.line = element_blank())
 
-theme_black&lt;- theme(plot.background = element_rect(fill = &#39;#222222&#39;), panel.background = element_rect(fill = NA),panel.border = element_rect(fill = NA), panel.grid = element_line(color = NA), axis.title = element_blank(), plot.margin = unit(c(0,0,0,0),&quot;cm&quot;), axis.text = element_blank(), axis.line = element_blank())</code></pre>
+theme_black&lt;- theme(plot.background = element_rect(fill = &#39;#222222&#39;), panel.background = element_rect(fill = NA),panel.border = element_rect(fill = NA), panel.grid = element_line(color = NA), axis.title = element_blank(), plot.margin = unit(c(0,0,0,0),&quot;cm&quot;), axis.text = element_blank(), axis.line = element_blank())
+
+theme_black_blank&lt;- theme(plot.background = element_rect(fill = element_blank()), panel.background = element_rect(fill = element_blank()),panel.border = element_rect(fill = element_blank()), panel.grid = element_line(color = element_blank()), axis.title = element_blank(), plot.margin = unit(c(0,0,0,0),&quot;cm&quot;), axis.text = element_blank(), axis.line = element_blank(), legend.position = &quot;none&quot;)</code></pre>
 <ol start="7" style="list-style-type: decimal">
 <li>Create spatial distribution plot to identify locations of projects</li>
 </ol>
@@ -527,7 +529,7 @@ plot3 &lt;- ggplot()+
 </div>
 <div id="results" class="section level1">
 <h1>Results</h1>
-<p>Spatial Distibution of Community Solar Installations - Provided by NREL <img src="index_files/figure-html/unnamed-chunk-9-1.png" width="746.4" /> <br><br> Spatial Distibution of Community Solar Installations w/ Incentives shaded per $ - Provided by NREL &amp; DSIRE data <img src="index_files/figure-html/unnamed-chunk-10-1.png" width="746.4" /> <br><br></p>
+<p>Spatial Distibution of Community Solar Installations - Provided by NREL <img src="index_files/figure-html/unnamed-chunk-9-1.png" width="724.8" /> <br><br> Spatial Distibution of Community Solar Installations w/ Incentives shaded per $ - Provided by NREL &amp; DSIRE data <img src="index_files/figure-html/unnamed-chunk-10-1.png" width="746.4" /> <br><br></p>
 <p>Spatial Distibution of Community Solar Installations w/ Incentives shaded per quantity - Provided by NREL &amp; DSIRE data <img src="index_files/figure-html/unnamed-chunk-11-1.png" width="746.4" /></p>
 <hr />
 </div>

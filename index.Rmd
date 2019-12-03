@@ -78,8 +78,7 @@ DSIRE_technology_category <- read_csv("https://raw.githubusercontent.com/geo511-
 4. Join the DSIRE datasets  
 <br>
 ![Data Structure Representation](docs/Data_Structure.PNG)
-<br>
-(https://github.com/geo511-2019/2019-geo511-project-austin3087/blob/master/docs/Data_Structure.PNG)
+
 ```{r, warning = FALSE, message = FALSE}
 #Join the DSIRE datasets by their relevant keys creating one "Final" table with relevant information. See data relationship chart above to identify how tables are related. 
 DSIRE_program2 <- inner_join(DSIRE_program,DSIRE_state, by = "state_id")%>%
@@ -119,6 +118,8 @@ kwh_mean_state$State <- tolower(kwh_mean_state$State)
 theme_black_nol<- theme(plot.background = element_rect(fill = '#222222'), panel.background = element_rect(fill = NA),panel.border = element_rect(fill = NA), panel.grid = element_line(color = NA), axis.title = element_blank(), legend.position = "none", plot.margin = unit(c(0,0,0,0),"cm"), axis.text = element_blank(), axis.line = element_blank())
 
 theme_black<- theme(plot.background = element_rect(fill = '#222222'), panel.background = element_rect(fill = NA),panel.border = element_rect(fill = NA), panel.grid = element_line(color = NA), axis.title = element_blank(), plot.margin = unit(c(0,0,0,0),"cm"), axis.text = element_blank(), axis.line = element_blank())
+
+theme_black_blank<- theme(plot.background = element_rect(fill = element_blank()), panel.background = element_rect(fill = element_blank()),panel.border = element_rect(fill = element_blank()), panel.grid = element_line(color = element_blank()), axis.title = element_blank(), plot.margin = unit(c(0,0,0,0),"cm"), axis.text = element_blank(), axis.line = element_blank(), legend.position = "none")
 
 ```
 7. Create spatial distribution plot to identify locations of projects
@@ -163,7 +164,7 @@ plot3 <- ggplot()+
 # Results
 
 Spatial Distibution of Community Solar Installations - Provided by NREL
-```{r, fig.width=7.775, fig.height=4, echo = FALSE, warning = FALSE, fig.fullwidth = TRUE}
+```{r, fig.width=7.55, fig.height=3.85, echo = FALSE, warning = FALSE, fig.fullwidth = TRUE}
 plot1
 ```
 <br><br>
