@@ -76,8 +76,8 @@ DSIRE_technology_category <- read_csv("https://raw.githubusercontent.com/geo511-
 ```
 
 4. Join the DSIRE datasets  
-<br>
-![Data Structure Representation](docs/Data_Structure.PNG)
+
+![Data Structure Representation](Data_Structure.PNG)
 
 ```{r, warning = FALSE, message = FALSE}
 #Join the DSIRE datasets by their relevant keys creating one "Final" table with relevant information. See data relationship chart above to identify how tables are related. 
