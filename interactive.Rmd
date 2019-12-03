@@ -1,6 +1,5 @@
 ---
 title: "GEO-511 Semester Project - Interactive Map"
-author: Austin Izzo
 subtitle: Modeling the relationship between community solar projects and the incentives in the US. 
 output:
   html_document: 

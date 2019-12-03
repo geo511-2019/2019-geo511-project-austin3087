@@ -1,6 +1,5 @@
 ---
 title: "Underlying Data"
-author: "Austin I"
 date: "December 3, 2019"
 output: html_document
 ---
