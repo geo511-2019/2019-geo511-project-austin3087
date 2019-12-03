@@ -454,7 +454,7 @@ DSIRE_technology &lt;- read_csv(&quot;https://raw.githubusercontent.com/geo511-2
 DSIRE_technology_category &lt;- read_csv(&quot;https://raw.githubusercontent.com/geo511-2019/2019-geo511-project-austin3087/master/technology_category.csv&quot;)</code></pre>
 <ol start="4" style="list-style-type: decimal">
 <li>Join the DSIRE datasets<br />
-<br> <img src="docs/Data_Structure.PNG" alt="Data Structure Representation" /> <br> {r}[Backup link] (<a href="https://github.com/geo511-2019/2019-geo511-project-austin3087/blob/master/docs/Data_Structure.PNG" class="uri">https://github.com/geo511-2019/2019-geo511-project-austin3087/blob/master/docs/Data_Structure.PNG</a>)</li>
+<br> <img src="docs/Data_Structure.PNG" alt="Data Structure Representation" /> <br> (<a href="https://github.com/geo511-2019/2019-geo511-project-austin3087/blob/master/docs/Data_Structure.PNG" class="uri">https://github.com/geo511-2019/2019-geo511-project-austin3087/blob/master/docs/Data_Structure.PNG</a>)</li>
 </ol>
 <pre class="r"><code>#Join the DSIRE datasets by their relevant keys creating one &quot;Final&quot; table with relevant information. See data relationship chart above to identify how tables are related. 
 DSIRE_program2 &lt;- inner_join(DSIRE_program,DSIRE_state, by = &quot;state_id&quot;)%&gt;%
