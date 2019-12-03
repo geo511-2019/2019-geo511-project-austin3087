@@ -103,7 +103,7 @@ Code to  Create an interactive plot of solar projects using leaflet
 library(leaflet)
 leaflet <- leaflet(NREL_Data)%>%
   addTiles()%>%
-  addAwesomeMarkers(lng = ~Longitude, lat = ~Latitude, popup = ~as.character(Project), clusterOptions = markerClusterOptions())
+  addAwesomeMarkers(lng = ~Longitude, lat = ~Latitude, popup = paste("Project:", NREL_Data$Project,"<br>", "Location:", NREL_Data$City, "<br>", "State:", NREL_Data$State,"<br>", "Size (kWh):", NREL_Data$`Size(kWh)`), clusterOptions = markerClusterOptions())
 ```
 
 # Results
