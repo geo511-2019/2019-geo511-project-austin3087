@@ -453,8 +453,12 @@ DSIRE_program_tech &lt;- read_csv(&quot;https://raw.githubusercontent.com/geo511
 DSIRE_technology &lt;- read_csv(&quot;https://raw.githubusercontent.com/geo511-2019/2019-geo511-project-austin3087/master/technology.csv&quot;)
 DSIRE_technology_category &lt;- read_csv(&quot;https://raw.githubusercontent.com/geo511-2019/2019-geo511-project-austin3087/master/technology_category.csv&quot;)</code></pre>
 <ol start="4" style="list-style-type: decimal">
-<li>Join the DSIRE datasets <img src="Data_Structure.png" alt="Data Structure Representation" /></li>
+<li>Join the DSIRE datasets</li>
 </ol>
+<div class="figure">
+<img src="Data_structure.png" alt="Data Structure Representation" />
+<p class="caption">Data Structure Representation</p>
+</div>
 <pre class="r"><code>#Join the DSIRE datasets by their relevant keys creating one &quot;Final&quot; table with relevant information. See data relationship chart above to identify how tables are related. 
 DSIRE_program2 &lt;- inner_join(DSIRE_program,DSIRE_state, by = &quot;state_id&quot;)%&gt;%
   inner_join(DSIRE_parameter_set, by = c(&quot;id&quot; = &quot;program_id&quot;))%&gt;%
