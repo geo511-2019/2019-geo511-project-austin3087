@@ -1,5 +1,5 @@
 ---
-title: "GEO-511 Semester Project - Interactive Map"
+title: "Interactive Map"
 subtitle: Modeling the relationship between community solar projects and the incentives in the US. 
 output:
   html_document: 
