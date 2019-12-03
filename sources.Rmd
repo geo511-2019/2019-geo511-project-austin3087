@@ -4,6 +4,17 @@ date: "November 28, 2019"
 output: html_document
 ---
 
+<style>                     
+.navbar {
+  background-color:grey;
+  border-color:black;
+}
+.navbar-brand {
+color:black!important;
+}
+</style>  
+
+
 # References/Data Sources
  
 Source 1: Yale Climate Opinion Maps 2018  

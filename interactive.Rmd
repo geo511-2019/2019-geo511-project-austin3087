@@ -8,6 +8,18 @@ output:
     
 ---
 
+
+<style>                     
+.navbar {
+  background-color:grey;
+  border-color:black;
+}
+.navbar-brand {
+color:black!important;
+}
+</style>  
+
+
 #Code Chunks 
 
 ```{r, message=F, warning=F, echo = FALSE}

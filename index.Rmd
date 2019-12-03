@@ -7,6 +7,17 @@ output:
     code_folding: hide
 ---
 
+<style>                     
+.navbar {
+  background-color:grey;
+  border-color:black;
+}
+.navbar-brand {
+color:black!important;
+}
+</style>  
+
+
 # Introduction
 With the expansion of solar energy throughout the United States in the past year, community solar projects have become increasingly popular. Community solar projects often consist of a partnership between the public, government entities and the business sector to install solar energy throughout a community. The outcomes of such programs can be prosperous for all entities involved. Although a seemingly common sense solution to part of the nation's energy challenge, community solar projects are a relatively new concept and spatial trends in where these projects are taking place. 
 

@@ -5,6 +5,17 @@ date: "December 3, 2019"
 output: html_document
 ---
 
+<style>                     
+.navbar {
+  background-color:grey;
+  border-color:black;
+}
+.navbar-brand {
+color:black!important;
+}
+</style>  
+
+
 #Underlying Data 
 ##Two tables displaying the data used in the report. 
 
