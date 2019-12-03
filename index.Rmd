@@ -148,9 +148,10 @@ DSIRE_program_table2 <- full_join(kwh_mean_state, state_geom, by = c("State" = "
 
 plot2 <- ggplot()+
   geom_polygon(data = DSIRE_program_table2, aes(x = long, y = lat, group = group, fill = Average), col = "#ba5454")+
-  coord_fixed(1.5)+
+  coord_fixed(1.2)+
   geom_point(NREL_Data, mapping = aes(x = Longitude , y = Latitude), col = "#6ca2b8", alpha = .8)+
-  theme_black
+  theme_black+
+  scale_fill_gradient(low = "#496692", high = "#000E23")
 ```
 
 8. Plot spatial distribution along w/ shaded quantity incentive per state
@@ -159,7 +160,7 @@ DSIRE_program_table3 <- full_join(kwh_total_state, state_geom, by = c("State" = 
 
 plot3 <- ggplot()+
   geom_polygon(data = DSIRE_program_table3, aes(x = long, y = lat, group = group, fill = Total), col = "#ba5454")+
-  coord_fixed(1.5)+
+  coord_fixed(1.2)+
   geom_point(NREL_Data, mapping = aes(x = Longitude , y = Latitude), col = "#6ca2b8", alpha = .8)+
   theme_black+
   scale_fill_gradient(low = "#496692", high = "#000E23")
@@ -174,13 +175,15 @@ Spatial Distibution of Community Solar Installations - Provided by NREL
 ```{r, fig.width=7.775, fig.height=4, echo = FALSE, warning = FALSE, fig.fullwidth = TRUE}
 plot1
 ```
-
+<br><br>
 Spatial Distibution of Community Solar Installations w/ Incentives shaded per $ - Provided by NREL & DSIRE data
-```{r, fig.width=8, fig.height=4, echo = FALSE, warning = FALSE}
+```{r, fig.width=7.775, fig.height=3.4, echo = FALSE, warning = FALSE}
 plot2
 ```
+<br><br>
+
 Spatial Distibution of Community Solar Installations w/ Incentives shaded per quantity - Provided by NREL & DSIRE data
-```{r, fig.width=8, fig.height=4, echo = FALSE, warning = FALSE}
+```{r, fig.width=7.775, fig.height=3.6, echo = FALSE, warning = FALSE}
 plot3
 ```
 

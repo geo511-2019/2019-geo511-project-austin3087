@@ -519,9 +519,10 @@ plot1 &lt;- ggplot()+
 
 plot2 &lt;- ggplot()+
   geom_polygon(data = DSIRE_program_table2, aes(x = long, y = lat, group = group, fill = Average), col = &quot;#ba5454&quot;)+
-  coord_fixed(1.5)+
+  coord_fixed(1.2)+
   geom_point(NREL_Data, mapping = aes(x = Longitude , y = Latitude), col = &quot;#6ca2b8&quot;, alpha = .8)+
-  theme_black</code></pre>
+  theme_black+
+  scale_fill_gradient(low = &quot;#496692&quot;, high = &quot;#000E23&quot;)</code></pre>
 <ol start="8" style="list-style-type: decimal">
 <li>Plot spatial distribution along w/ shaded quantity incentive per state</li>
 </ol>
@@ -529,7 +530,7 @@ plot2 &lt;- ggplot()+
 
 plot3 &lt;- ggplot()+
   geom_polygon(data = DSIRE_program_table3, aes(x = long, y = lat, group = group, fill = Total), col = &quot;#ba5454&quot;)+
-  coord_fixed(1.5)+
+  coord_fixed(1.2)+
   geom_point(NREL_Data, mapping = aes(x = Longitude , y = Latitude), col = &quot;#6ca2b8&quot;, alpha = .8)+
   theme_black+
   scale_fill_gradient(low = &quot;#496692&quot;, high = &quot;#000E23&quot;)</code></pre>
@@ -537,8 +538,8 @@ plot3 &lt;- ggplot()+
 </div>
 <div id="results" class="section level1">
 <h1>Results</h1>
-<p>Spatial Distibution of Community Solar Installations - Provided by NREL <img src="index_files/figure-html/unnamed-chunk-8-1.png" width="746.4" /></p>
-<p>Spatial Distibution of Community Solar Installations w/ Incentives shaded per $ - Provided by NREL &amp; DSIRE data <img src="index_files/figure-html/unnamed-chunk-9-1.png" width="768" /> Spatial Distibution of Community Solar Installations w/ Incentives shaded per quantity - Provided by NREL &amp; DSIRE data <img src="index_files/figure-html/unnamed-chunk-10-1.png" width="768" /></p>
+<p>Spatial Distibution of Community Solar Installations - Provided by NREL <img src="index_files/figure-html/unnamed-chunk-8-1.png" width="746.4" /> <br><br> Spatial Distibution of Community Solar Installations w/ Incentives shaded per $ - Provided by NREL &amp; DSIRE data <img src="index_files/figure-html/unnamed-chunk-9-1.png" width="746.4" /> <br><br></p>
+<p>Spatial Distibution of Community Solar Installations w/ Incentives shaded per quantity - Provided by NREL &amp; DSIRE data <img src="index_files/figure-html/unnamed-chunk-10-1.png" width="746.4" /></p>
 <hr />
 </div>
 <div id="conclusion" class="section level1">
