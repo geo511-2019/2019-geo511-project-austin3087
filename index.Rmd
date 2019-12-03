@@ -5,7 +5,6 @@ subtitle: Modeling the relationship between community solar projects and the inc
 output:
   html_document: 
     code_folding: hide
-    
 ---
 
 # Introduction
@@ -13,6 +12,7 @@ With the expansion of solar energy throughout the United States in the past year
 
 Research Question: In this analysis, the goal will be to identify what role financial incentives play in the installment of projects in the US. 
 
+*** 
 
 # Materials and methods
 
@@ -27,6 +27,8 @@ Research Question: In this analysis, the goal will be to identify what role fina
   1. Scatter Plot of variable vs solar projects
   2. Scatter Plot of variable vs size of system
   3. Summary Tables for each variable 
+
+***
 
 #Code Chunks 
 1. Load any required packages:
@@ -120,8 +122,8 @@ DSIRE_program_table1 <- full_join(kwh_total_state, state_geom, by = c("State" = 
 
 #Plot just Community Locationsadd state geometry to DSIRE data to plot
 plot1 <- ggplot()+
-  geom_polygon(data = state_geom, aes(x = long, y = lat, group = group), col = "#ba5454")+
-  coord_fixed(1.5)+
+  geom_polygon(data = state_geom, aes(x = long, y = lat, group = group ), fill = '#222222', col = "#ba5454")+
+  coord_fixed(ratio = 1.2)+
   geom_point(NREL_Data, mapping = aes(x = Longitude , y = Latitude, alpha = .85), col = "#6ca2b8")+
   theme(plot.background = element_rect(fill = '#222222'), panel.background = element_rect(fill = NA),panel.border = element_rect(fill = NA), panel.grid = element_line(color = NA), axis.title = element_blank(), legend.position = "none", plot.margin = unit(c(0,0,0,0),"cm"), axis.text = element_blank(), axis.line = element_blank())
 ```
@@ -148,18 +150,14 @@ plot3 <- ggplot()+
   theme_void()+
   scale_fill_gradient(low = "#496692", high = "#000E23")
 ```
-9. Create an interactive plot of solar projects using leaflet
-```{r, fig.width=8, fig.height=3, echo = FALSE, warning = FALSE}
-library(leaflet)
-leaflet <- leaflet(NREL_Data)%>%
-  addTiles()%>%
-  addAwesomeMarkers(lng = ~Longitude, lat = ~Latitude, popup = ~as.character(Project), clusterOptions = markerClusterOptions())
-```
+
+
+***
 
 # Results
 
 Spatial Distibution of Community Solar Installations - Provided by NREL
-```{r, fig.width=8, fig.height=3, echo = FALSE, warning = FALSE}
+```{r, fig.width=7.775, fig.height=4, echo = FALSE, warning = FALSE, fig.fullwidth = TRUE}
 plot1
 ```
 
@@ -168,35 +166,11 @@ Spatial Distibution of Community Solar Installations w/ Incentives shaded per $ 
 plot2
 ```
 Spatial Distibution of Community Solar Installations w/ Incentives shaded per quantity - Provided by NREL & DSIRE data
-```{r, fig.width=8, fig.height=4, fig.cap="Map of completely random data", echo = FALSE, warning = FALSE}
+```{r, fig.width=8, fig.height=4, echo = FALSE, warning = FALSE}
 plot3
 ```
-An interactive plot of solar projects using leaflet
-```{r, fig.width=8, fig.height=3, echo = FALSE, warning = FALSE}
-leaflet
-```
+***
 
-Show the total amount of power generated per state (kWh) 
-```{r, fig.width=8, fig.height=4, fig.cap="Map of completely random data", echo = FALSE, warning = FALSE}
-library("DT")
-kwh_total_state_table<- kwh_total_state%>%
-  group_by(State)%>%
-  arrange(desc(Total))
-
-datatable(kwh_total_state_table)%>%
-  formatStyle(columns = c(" ","State", "Total"),color = 'black')
-```
-
-Show the mean size of community solar installations (kWh) 
-```{r, fig.width=8, fig.height=4, echo = FALSE, warning = FALSE}
-#install.packages("DT")
-library(DT)
-kwh_mean_state_table<- kwh_mean_state%>%
-  arrange(desc(Average))
-
-datatable(kwh_mean_state_table)%>%
-  formatStyle(columns = c(" ","State", "Average"),color = 'black')
-```                                                                                                                                                                                                                
 # Conclusion
 
 

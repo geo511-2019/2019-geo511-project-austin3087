@@ -1,0 +1,34 @@
+---
+title: "Underlying Data"
+author: "Austin I"
+date: "December 3, 2019"
+output: html_document
+---
+
+#Underlying Data 
+##Two tables displaying the data used in the report. 
+
+***
+
+##Raw Data 
+Show the total amount of power generated per state (kWh) 
+```{r, fig.width=8, fig.height=4, fig.cap="Map of completely random data", echo = FALSE, warning = FALSE}
+library("DT")
+kwh_total_state_table<- kwh_total_state%>%
+  group_by(State)%>%
+  arrange(desc(Total))
+
+datatable(kwh_total_state_table)%>%
+  formatStyle(columns = c(" ","State", "Total"),color = 'black')
+```
+
+Show the mean size of community solar installations (kWh) 
+```{r, fig.width=8, fig.height=4, echo = FALSE, warning = FALSE}
+#install.packages("DT")
+library(DT)
+kwh_mean_state_table<- kwh_mean_state%>%
+  arrange(desc(Average))
+
+datatable(kwh_mean_state_table)%>%
+  formatStyle(columns = c(" ","State", "Average"),color = 'black')
+```                 
