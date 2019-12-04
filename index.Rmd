@@ -198,21 +198,21 @@ plot3 <- ggplot()+
 # Results
 
 ###Spatial Distibution of Community Solar Installations - Provided by NREL
-```{r, fig.width=6.15, fig.height=3.2, echo = FALSE, warning = FALSE, fig.fullwidth = TRUE, fig.fullheight = TRUE, fig.align="center"}
+```{r, fig.width=7.5, fig.height=3.88, echo = FALSE, warning = FALSE, fig.fullwidth = TRUE, fig.fullheight = TRUE, fig.align="center"}
 plot1
 ```
 <br>
 <br>
 
 ###Spatial Distibution of Community Solar Installations w/ Incentives shaded per $ - Provided by NREL & DSIRE data
-```{r, fig.width=6.15, fig.height=3.2, echo = FALSE, warning = FALSE, fig.align="center"}
+```{r, fig.width=7.5, fig.height=3.88, echo = FALSE, warning = FALSE, fig.align="center"}
 plot2
 ```
 <br>
 <br>
 
 ###Spatial Distibution of Community Solar Installations w/ Incentives shaded per quantity - Provided by NREL & DSIRE data
-```{r, fig.width=6.15, fig.height=3.2, echo = FALSE, warning = FALSE, fig.align="center"}
+```{r, fig.width=7.5, fig.height=3.88, echo = FALSE, warning = FALSE, fig.align="center"}
 plot3
 ```
 
