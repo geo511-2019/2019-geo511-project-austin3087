@@ -395,6 +395,7 @@ div.tocify {
 color:black!important;
 }
 </style>
+
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
 <p>With the expansion of solar energy throughout the United States in the past year, community solar projects have become increasingly popular. Community solar projects often consist of a partnership between the public, government entities and the business sector to install solar energy throughout a community. The outcomes of such programs can be prosperous for all entities involved. Although a seemingly common sense solution to part of the nation’s energy challenge, community solar projects are a relatively new concept and spatial trends in where these projects are taking place.</p>
@@ -490,11 +491,43 @@ kwh_mean_state$State &lt;- tolower(kwh_mean_state$State)</code></pre>
 <li>Create custom themes (with and without legend)</li>
 </ol>
 <pre class="r"><code>#Create Custom theme 
-theme_black_nol&lt;- theme(plot.background = element_rect(fill = &#39;#222222&#39;), panel.background = element_rect(fill = NA),panel.border = element_rect(fill = NA), panel.grid = element_line(color = NA), axis.title = element_blank(), legend.position = &quot;none&quot;, plot.margin = unit(c(0,0,0,0),&quot;cm&quot;), axis.text = element_blank(), axis.line = element_blank())
+theme_black_nol&lt;- theme(
+  plot.background = element_rect(fill = &#39;#222222&#39;), 
+  panel.background = element_rect(fill = NA),
+  panel.border = element_rect(fill = NA), 
+  panel.grid = element_line(color = NA), 
+  axis.title = element_blank(), 
+  legend.position = &quot;none&quot;, 
+  plot.margin = unit(c(0,0,0,0),&quot;cm&quot;), 
+  axis.text = element_blank(), 
+  axis.line = element_blank()
+  )
 
-theme_black&lt;- theme(plot.background = element_rect(fill = &#39;#222222&#39;), panel.background = element_rect(fill = NA),panel.border = element_rect(fill = NA), panel.grid = element_line(color = NA), axis.title = element_blank(), plot.margin = unit(c(0,0,0,0),&quot;cm&quot;), axis.text = element_blank(), axis.line = element_blank())
+theme_black&lt;- theme(
+  plot.background = element_rect(fill = &#39;#222222&#39;), 
+  panel.background = element_rect(fill = NA),
+  panel.border = element_rect(fill = NA), 
+  panel.grid = element_line(color = NA), 
+  axis.title = element_blank(), 
+  plot.margin = unit(c(0,0,0,0),&quot;cm&quot;), 
+  axis.text = element_blank(), 
+  axis.line = element_blank()
+  )
 
-theme_black_blank&lt;- theme(plot.background = element_rect(fill = element_blank()), panel.background = element_rect(fill = element_blank()),panel.border = element_rect(fill = element_blank()), panel.grid = element_line(color = element_blank()), axis.title = element_blank(), plot.margin = unit(c(0,0,0,0),&quot;cm&quot;), axis.text = element_blank(), axis.line = element_blank(), legend.position = &quot;none&quot;)</code></pre>
+theme_black_blank&lt;- theme(
+    panel.background = element_rect(fill = &quot;transparent&quot;), # bg of the panel
+    plot.background = element_rect(fill = &quot;#222222&quot;, color = &quot;#222222&quot;), # bg of the plot
+    panel.grid.major = element_blank(), # get rid of major grid
+    panel.grid.minor = element_blank(), # get rid of minor grid
+    legend.background = element_rect(fill = &quot;transparent&quot;), # get rid of legend bg
+    legend.box.background = element_rect(fill = &quot;transparent&quot;), # get rid of legend panel bg
+    panel.border = element_blank(), 
+    axis.title = element_blank(), 
+    axis.text = element_blank(), 
+    axis.line = element_line(&quot;transparent&quot;), 
+    legend.position = &quot;none&quot;
+
+  )</code></pre>
 <ol start="7" style="list-style-type: decimal">
 <li>Create spatial distribution plot to identify locations of projects</li>
 </ol>
@@ -505,7 +538,7 @@ plot1 &lt;- ggplot()+
   geom_polygon(data = state_geom, aes(x = long, y = lat, group = group ), fill = &#39;#222222&#39;, col = &quot;#ba5454&quot;)+
   coord_fixed(ratio = 1.2)+
   geom_point(NREL_Data, mapping = aes(x = Longitude , y = Latitude, alpha = .85), col = &quot;#6ca2b8&quot;)+
-  theme_black_nol</code></pre>
+  theme_black_blank</code></pre>
 <ol start="8" style="list-style-type: decimal">
 <li>Plot Spatial Distribution along w/ shaded mean incentive per state</li>
 </ol>
@@ -515,7 +548,7 @@ plot2 &lt;- ggplot()+
   geom_polygon(data = DSIRE_program_table2, aes(x = long, y = lat, group = group, fill = Average), col = &quot;#ba5454&quot;)+
   coord_fixed(1.2)+
   geom_point(NREL_Data, mapping = aes(x = Longitude , y = Latitude), col = &quot;#6ca2b8&quot;, alpha = .8)+
-  theme_black+
+  theme_black_blank+
   scale_fill_gradient(low = &quot;#496692&quot;, high = &quot;#000E23&quot;)</code></pre>
 <ol start="9" style="list-style-type: decimal">
 <li>Plot spatial distribution along w/ shaded quantity incentives per state</li>
@@ -526,15 +559,25 @@ plot3 &lt;- ggplot()+
   geom_polygon(data = DSIRE_program_table3, aes(x = long, y = lat, group = group, fill = Total), col = &quot;#ba5454&quot;)+
   coord_fixed(1.2)+
   geom_point(NREL_Data, mapping = aes(x = Longitude , y = Latitude), col = &quot;#6ca2b8&quot;, alpha = .8)+
-  theme_black+
+  theme_black_blank+
   scale_fill_gradient(low = &quot;#496692&quot;, high = &quot;#000E23&quot;)</code></pre>
 <hr />
 </div>
 <div id="results" class="section level1">
 <h1>Results</h1>
-<p>Spatial Distibution of Community Solar Installations - Provided by NREL <img src="index_files/figure-html/unnamed-chunk-9-1.png" width="724.8" /> <br><br> Spatial Distibution of Community Solar Installations w/ Incentives shaded per $ - Provided by NREL &amp; DSIRE data <img src="index_files/figure-html/unnamed-chunk-10-1.png" width="746.4" /> <br><br></p>
-<p>Spatial Distibution of Community Solar Installations w/ Incentives shaded per quantity - Provided by NREL &amp; DSIRE data <img src="index_files/figure-html/unnamed-chunk-11-1.png" width="746.4" /></p>
+<div id="spatial-distibution-of-community-solar-installations---provided-by-nrel" class="section level3">
+<h3>Spatial Distibution of Community Solar Installations - Provided by NREL</h3>
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" width="590.4" style="display: block; margin: auto;" /> <br> <br></p>
+</div>
+<div id="spatial-distibution-of-community-solar-installations-w-incentives-shaded-per---provided-by-nrel-dsire-data" class="section level3">
+<h3>Spatial Distibution of Community Solar Installations w/ Incentives shaded per $ - Provided by NREL &amp; DSIRE data</h3>
+<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" width="590.4" style="display: block; margin: auto;" /> <br> <br></p>
+</div>
+<div id="spatial-distibution-of-community-solar-installations-w-incentives-shaded-per-quantity---provided-by-nrel-dsire-data" class="section level3">
+<h3>Spatial Distibution of Community Solar Installations w/ Incentives shaded per quantity - Provided by NREL &amp; DSIRE data</h3>
+<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" width="590.4" style="display: block; margin: auto;" /></p>
 <hr />
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>Conclusion</h1>

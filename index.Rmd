@@ -17,6 +17,7 @@ color:black!important;
 }
 </style>  
 
+\pagecolor{yellow}
 
 # Introduction 
 With the expansion of solar energy throughout the United States in the past year, community solar projects have become increasingly popular. Community solar projects often consist of a partnership between the public, government entities and the business sector to install solar energy throughout a community. The outcomes of such programs can be prosperous for all entities involved. Although a seemingly common sense solution to part of the nation's energy challenge, community solar projects are a relatively new concept and spatial trends in where these projects are taking place. 
@@ -79,6 +80,7 @@ DSIRE_technology_category <- read_csv("https://raw.githubusercontent.com/geo511-
 
 ![Data Structure Representation](Data_Structure.PNG)
 
+
 ```{r, warning = FALSE, message = FALSE}
 #Join the DSIRE datasets by their relevant keys creating one "Final" table with relevant information. See data relationship chart above to identify how tables are related. 
 DSIRE_program2 <- inner_join(DSIRE_program,DSIRE_state, by = "state_id")%>%
@@ -115,11 +117,43 @@ kwh_mean_state$State <- tolower(kwh_mean_state$State)
 ```{r, warning = FALSE}
 
 #Create Custom theme 
-theme_black_nol<- theme(plot.background = element_rect(fill = '#222222'), panel.background = element_rect(fill = NA),panel.border = element_rect(fill = NA), panel.grid = element_line(color = NA), axis.title = element_blank(), legend.position = "none", plot.margin = unit(c(0,0,0,0),"cm"), axis.text = element_blank(), axis.line = element_blank())
+theme_black_nol<- theme(
+  plot.background = element_rect(fill = '#222222'), 
+  panel.background = element_rect(fill = NA),
+  panel.border = element_rect(fill = NA), 
+  panel.grid = element_line(color = NA), 
+  axis.title = element_blank(), 
+  legend.position = "none", 
+  plot.margin = unit(c(0,0,0,0),"cm"), 
+  axis.text = element_blank(), 
+  axis.line = element_blank()
+  )
 
-theme_black<- theme(plot.background = element_rect(fill = '#222222'), panel.background = element_rect(fill = NA),panel.border = element_rect(fill = NA), panel.grid = element_line(color = NA), axis.title = element_blank(), plot.margin = unit(c(0,0,0,0),"cm"), axis.text = element_blank(), axis.line = element_blank())
+theme_black<- theme(
+  plot.background = element_rect(fill = '#222222'), 
+  panel.background = element_rect(fill = NA),
+  panel.border = element_rect(fill = NA), 
+  panel.grid = element_line(color = NA), 
+  axis.title = element_blank(), 
+  plot.margin = unit(c(0,0,0,0),"cm"), 
+  axis.text = element_blank(), 
+  axis.line = element_blank()
+  )
 
-theme_black_blank<- theme(plot.background = element_rect(fill = element_blank()), panel.background = element_rect(fill = element_blank()),panel.border = element_rect(fill = element_blank()), panel.grid = element_line(color = element_blank()), axis.title = element_blank(), plot.margin = unit(c(0,0,0,0),"cm"), axis.text = element_blank(), axis.line = element_blank(), legend.position = "none")
+theme_black_blank<- theme(
+    panel.background = element_rect(fill = "transparent"), # bg of the panel
+    plot.background = element_rect(fill = "#222222", color = "#222222"), # bg of the plot
+    panel.grid.major = element_blank(), # get rid of major grid
+    panel.grid.minor = element_blank(), # get rid of minor grid
+    legend.background = element_rect(fill = "transparent"), # get rid of legend bg
+    legend.box.background = element_rect(fill = "transparent"), # get rid of legend panel bg
+    panel.border = element_blank(), 
+    axis.title = element_blank(), 
+    axis.text = element_blank(), 
+    axis.line = element_line("transparent"), 
+    legend.position = "none"
+
+  )
 
 ```
 7. Create spatial distribution plot to identify locations of projects
@@ -132,7 +166,7 @@ plot1 <- ggplot()+
   geom_polygon(data = state_geom, aes(x = long, y = lat, group = group ), fill = '#222222', col = "#ba5454")+
   coord_fixed(ratio = 1.2)+
   geom_point(NREL_Data, mapping = aes(x = Longitude , y = Latitude, alpha = .85), col = "#6ca2b8")+
-  theme_black_nol
+  theme_black_blank
 ```
 
 8. Plot Spatial Distribution along w/ shaded mean incentive per state
@@ -143,7 +177,7 @@ plot2 <- ggplot()+
   geom_polygon(data = DSIRE_program_table2, aes(x = long, y = lat, group = group, fill = Average), col = "#ba5454")+
   coord_fixed(1.2)+
   geom_point(NREL_Data, mapping = aes(x = Longitude , y = Latitude), col = "#6ca2b8", alpha = .8)+
-  theme_black+
+  theme_black_blank+
   scale_fill_gradient(low = "#496692", high = "#000E23")
 ```
 
@@ -155,7 +189,7 @@ plot3 <- ggplot()+
   geom_polygon(data = DSIRE_program_table3, aes(x = long, y = lat, group = group, fill = Total), col = "#ba5454")+
   coord_fixed(1.2)+
   geom_point(NREL_Data, mapping = aes(x = Longitude , y = Latitude), col = "#6ca2b8", alpha = .8)+
-  theme_black+
+  theme_black_blank+
   scale_fill_gradient(low = "#496692", high = "#000E23")
 ```
 
@@ -163,19 +197,22 @@ plot3 <- ggplot()+
 
 # Results
 
-Spatial Distibution of Community Solar Installations - Provided by NREL
-```{r, fig.width=7.55, fig.height=3.85, echo = FALSE, warning = FALSE, fig.fullwidth = TRUE}
+###Spatial Distibution of Community Solar Installations - Provided by NREL
+```{r, fig.width=6.15, fig.height=3.2, echo = FALSE, warning = FALSE, fig.fullwidth = TRUE, fig.fullheight = TRUE, fig.align="center"}
 plot1
 ```
-<br><br>
-Spatial Distibution of Community Solar Installations w/ Incentives shaded per $ - Provided by NREL & DSIRE data
-```{r, fig.width=7.775, fig.height=3.4, echo = FALSE, warning = FALSE}
+<br>
+<br>
+
+###Spatial Distibution of Community Solar Installations w/ Incentives shaded per $ - Provided by NREL & DSIRE data
+```{r, fig.width=6.15, fig.height=3.2, echo = FALSE, warning = FALSE, fig.align="center"}
 plot2
 ```
-<br><br>
+<br>
+<br>
 
-Spatial Distibution of Community Solar Installations w/ Incentives shaded per quantity - Provided by NREL & DSIRE data
-```{r, fig.width=7.775, fig.height=3.6, echo = FALSE, warning = FALSE}
+###Spatial Distibution of Community Solar Installations w/ Incentives shaded per quantity - Provided by NREL & DSIRE data
+```{r, fig.width=6.15, fig.height=3.2, echo = FALSE, warning = FALSE, fig.align="center"}
 plot3
 ```
 
