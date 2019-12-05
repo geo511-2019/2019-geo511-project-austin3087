@@ -110,7 +110,7 @@ leaflet <- leaflet(NREL_Data)%>%
 
 # Results
 
-```{r, fig.width=8, fig.height=6, echo = FALSE, warning = FALSE}
+```{r, fig.width=8, fig.height=6, echo = FALSE, warning = FALSE,fig.align="center"}
 leaflet
 ```
 
