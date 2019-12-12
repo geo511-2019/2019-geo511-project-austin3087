@@ -115,31 +115,7 @@ kwh_mean_state$State <- tolower(kwh_mean_state$State)
 
 6. Create custom themes (with and without legend)
 ```{r, warning = FALSE}
-
 #Create Custom theme 
-theme_black_nol<- theme(
-  plot.background = element_rect(fill = '#222222'), 
-  panel.background = element_rect(fill = NA),
-  panel.border = element_rect(fill = NA), 
-  panel.grid = element_line(color = NA), 
-  axis.title = element_blank(), 
-  legend.position = "none", 
-  plot.margin = unit(c(0,0,0,0),"cm"), 
-  axis.text = element_blank(), 
-  axis.line = element_blank()
-  )
-
-theme_black<- theme(
-  plot.background = element_rect(fill = '#222222'), 
-  panel.background = element_rect(fill = NA),
-  panel.border = element_rect(fill = NA), 
-  panel.grid = element_line(color = NA), 
-  axis.title = element_blank(), 
-  plot.margin = unit(c(0,0,0,0),"cm"), 
-  axis.text = element_blank(), 
-  axis.line = element_blank()
-  )
-
 theme_black_blank<- theme(
     panel.background = element_rect(fill = "transparent"), # bg of the panel
     plot.background = element_rect(fill = "#222222", color = "#222222"), # bg of the plot
@@ -158,8 +134,6 @@ theme_black_blank<- theme(
 ```
 7. Create spatial distribution plot to identify locations of projects
 ```{r, warning = FALSE}
-
-DSIRE_program_table1 <- full_join(kwh_total_state, state_geom, by = c("State" = "region"))
 
 #Plot just Community Locationsadd state geometry to DSIRE data to plot
 plot1 <- ggplot()+
@@ -193,33 +167,140 @@ plot3 <- ggplot()+
   scale_fill_gradient(low = "#496692", high = "#000E23")
 ```
 
+10. Create Scatter plot of Average Incentive Provided vs Total # of Installations
+```{r, warning = FALSE}
+theme_black_scatter<- theme(
+    panel.background = element_rect(fill = "transparent"), # bg of the panel
+    plot.background = element_rect(fill = "#222222", color = "#222222"), # bg of the plot
+    panel.grid.major = element_blank(), # get rid of major grid
+    panel.grid.minor = element_blank(), # get rid of minor grid
+    legend.background = element_rect(fill = "transparent"), # get rid of legend bg
+    legend.box.background = element_rect(fill = "transparent"), # get rid of legend panel bg
+    panel.border = element_blank(), 
+    axis.title.x = element_text(color = "white"), 
+    axis.title.y = element_text(color = "white"),
+    axis.line = element_line(color = "white"),
+    axis.text.x = element_text(color = "white"),
+    axis.text.y = element_text(color = "white"),
+    legend.position = "none",
+    plot.title = element_text(color = "white", hjust = 0.5),
+    axis.ticks = element_line(color = "white")
+) 
+
+Total_per_state <- group_by(DSIRE_program_table2, State)%>%
+  dplyr::summarise(Total =  n())
+
+DSIRE_program_table4 <- full_join(kwh_mean_state, Total_per_state, by = c("State" = "State")) %>%
+  filter(Average < 20000)
+  
+plot4<- ggplot(DSIRE_program_table4)+
+  geom_point(aes(x = Average, y = Total), col = "#6ca2b8") +
+  theme_black_scatter + 
+  labs(title = "Average Incentive vs Number of Installations")+
+  ylab("Total Number of Installations")+
+  xlab("Average Incentive ($)")
+  
+```
+
+10. Create Scatter plot of Total # of Incentives vs Total # of Installations
+
+```{r}
+DSIRE_program_table5 <- full_join(kwh_total_state, Total_per_state, by = c("State" = "State"))
+names(DSIRE_program_table5) <- c("","Total_Incentive", "Total_Installation")
+
+plot5<- ggplot(DSIRE_program_table5)+
+  geom_point(aes(x = Total_Incentive, y = Total_Installation), col = "#6ca2b8") +
+  theme_black_scatter + 
+  labs(title = "Total Number of Incentives vs Number of Installations")+
+  ylab("Number of Installations")+
+  xlab("Total Number of Incentives")
+
+```
+
+
 ***
 
 # Results
 
-###Spatial Distibution of Community Solar Installations - Provided by NREL
+##Spatial Plots
+
+###Spatial Distibution of Community Solar Installations 
 ```{r, fig.width=7.5, fig.height=3.88, echo = FALSE, warning = FALSE, fig.fullwidth = TRUE, fig.fullheight = TRUE, fig.align="center", fig.retina= 1}
 plot1
 ```
+__Goal:__ Identify spatially where the installations exist. 
+
+__Description:__ This plot displays community solar installations across the US. 
+
+__Data Source:__ This data was retrieved from NREL. 
+<br>
+<br>
 <br>
 <br>
 
-###Spatial Distibution of Community Solar Installations w/ Incentives shaded per $ - Provided by NREL & DSIRE data
+###Spatial Distibution of Community Solar Installations w/ Incentives shaded per $ 
 ```{r, fig.width=7.5, fig.height=3.88, echo = FALSE, warning = FALSE, fig.align="center", fig.retina= 1}
 plot2
 ```
+__Goal:__ Identify spatial relationship on where more money is awarded for incentives. 
+
+__Description:__ This plot displays community solar installations across the US, with state shading representing money awarded for solar incentives. A larger amount of money provided through solar incentives is equal to a darker color.  
+
+__Data Source:__ This data was retrieved from NREL & DSIRE database.
+<br>
+<br>
 <br>
 <br>
 
-###Spatial Distibution of Community Solar Installations w/ Incentives shaded per quantity - Provided by NREL & DSIRE data
+###Spatial Distibution of Community Solar Installations w/ Incentives shaded per quantity
 ```{r, fig.width=7.5, fig.height=3.88, echo = FALSE, warning = FALSE, fig.align="center", fig.retina= 1}
 plot3
 ```
+__Goal:__ Identify spatial relationship on where more money is awarded for incentives. 
+
+__Description:__ This plot displays community solar installations across the US, with state shading representing total number of solar incentives available. A larger number of solar incentives is equal to a darker color.  
+
+__Data Source:__ This data was retrieved from NREL & DSIRE database.
+<br>
+<br>
+<br>
+<br>
+
+##Scatter Plots
+### Scatter Plot Comparing Number of Community Solar Installations w/ Average Incentive Value - Provided by NREL & DSIRE data
+*Note: Average Incentive > 20,000 excluded
+```{r, fig.width=7.5, fig.height=3.88, echo = FALSE, warning = FALSE, fig.align="center", fig.retina= 1}
+plot4
+```
+__Goal:__ Identify relationship between number of solar installations and incentive value.
+
+__Description:__ By comparing both number of solar installations and average incentive value we are able to identify if there is a clear trend relating both factors.
+
+__Data Source:__ This data was retrieved from NREL & DSIRE database.
+<br>
+<br>
+<br>
+<br>
+
+### Scatter Plot Comparing Number of Community Solar Installations w/ Number of Incentives - Provided by NREL & DSIRE data
+```{r, fig.width=7.5, fig.height=3.88, echo = FALSE, warning = FALSE, fig.align="center", fig.retina= 1}
+plot5
+```
+__Goal:__ Identify relationship between number of solar installations and number of incentives.
+
+__Description:__  By comparing both number of solar installations and number of incentives we are able to identify if there is a clear trend relating both factors. 
+
+__Data Source:__ This data was retrieved from NREL & DSIRE database
 
 ***
 
 # Conclusion
 
+After the analysis of the community solar projects was completed a couple conclusions could be made. 
+
+1 - There was no clear correlation between the amount of money awarded for incentives and the amount of community solar projects present in a given state.  As seen in the first scatter plot, displaying the number of projects vs the amount of money awarded, it is evident many of the states having a higher number of projects did not have a higher value of money awarded to them. This is expected since more frequent, lower value incentives are given will create a higher number (most likely also smaller in size) number of systems. 
+
+2 - Although, not a clear trend there appears to be more correlation between number of incentives and number of installations. The second scatter plot shows this trend, showing a higher density of number of installations for values states with less than 10 incentives. 
 
 
 
